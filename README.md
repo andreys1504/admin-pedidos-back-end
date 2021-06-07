@@ -18,6 +18,10 @@ via terminal: docker-compose up -d
 - .env
 utilizar .env.EXAMPLE para a criação das configurações da Api.
 
+- criar bancos de dados: AdminPedidos e AdminPedidos_Tests.
+
+- executar migrations: npm run migration:run
+
 ### yml's
 
 os arquivos yml são um exemplo para realizar a publicação da Api em um ambiente de testes junto ao Azure.
