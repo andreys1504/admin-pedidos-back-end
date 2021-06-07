@@ -6,15 +6,15 @@
   "main": "",
   "scripts": {
     "start-api-admin": "npm-run-all start1",
-    "start1": "npx ts-node-dev --inspect --respawn src/2-apis/api-front-end-web-admin/index.ts --ignore-watch __testes__",
-    "start:api-front-end-web-admin:dist": "node ./dist/2-apis/api-front-end-web-admin/index.js",
+    "start1": "npx ts-node-dev --inspect --respawn src/2-apis/api-admin/index.ts --ignore-watch __testes__",
+    "start:api-admin:dist": "node ./dist/2-apis/api-admin/index.js",
     "tsc": "tsc --project tsconfig.json",
     "migration:generate": "npx ts-node ./node_modules/typeorm/cli migration:generate --config .env --name tipo-pedido",
     "migration:run": "npx ts-node ./node_modules/typeorm/cli migration:run --config .env",
     "prod-migration:run": "npx ts-node ./node_modules/typeorm/cli migration:run --config ormconfig.js",
     "prod-migration:run2": "typeorm migration:run --config ormconfig.js",
     "prod:tsc": "tsc --project tsconfig.json",
-    "prod-api-admin": "node dist/2-apis/api-front-end-web-admin/index.js",
+    "prod-api-admin": "node dist/2-apis/api-admin/index.js",
     "pretest": "npx ts-node ./node_modules/typeorm/cli migration:run --config ormconfig.test.env",
     "test": "npx jest"
   },
