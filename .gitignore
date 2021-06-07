@@ -1,0 +1,21 @@
+
+# configurações softwares edição
+**/.vscode
+
+# dependências
+**/node_modules
+
+# testes
+**/__testes__/coverage
+
+# produção
+**/build
+**/dist
+
+# variáveis de ambiente
+**/.env
+#ormconfig.test.env
+
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*

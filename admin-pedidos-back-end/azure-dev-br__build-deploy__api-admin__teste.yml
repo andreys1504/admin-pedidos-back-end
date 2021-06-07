@@ -1,0 +1,171 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- desenvolvimento
+
+variables:
+  azureSubscription: 'Avaliação Gratuita(7f568350-ceb3-41f4)'
+  webAppName: 'api-admin-teste'
+  vmImageName: 'ubuntu-latest'
+  environmentName: 'api-admin-teste'
+
+stages:
+- stage: AppSettings
+  displayName: App Settings Stage
+  variables:
+  - template: azure-dev-br__variaveis__teste.yml
+  jobs:
+  - job: AppSettings
+    displayName: App Settings
+    steps:
+      - task: AzureAppServiceSettings@1
+        inputs:
+          azureSubscription: $(azureSubscription)
+          appName: $(webAppName)
+          resourceGroupName: 'teste-linux'
+          appSettings: |
+            [
+              {
+                "name": "APIS_SALT_KEY",
+                "value": "$(APIS_SALT_KEY)",
+                "slotSetting": false
+              },
+              {
+                "name": "CONTA_ARMAZENAMENTO_ARQUIVOS_CONFIGURACOES_ACESSO",
+                "value": "$(CONTA_ARMAZENAMENTO_ARQUIVOS_CONFIGURACOES_ACESSO)", 
+                "slotSetting": false
+              },
+              {
+                "name": "CONTA_ARMAZENAMENTO_ARQUIVOS_URL_ACESSO",
+                "value": "$(CONTA_ARMAZENAMENTO_ARQUIVOS_URL_ACESSO)", 
+                "slotSetting": false
+              },
+              {
+                "name": "CONTA_ARMAZENAMENTO_ARQUIVOS_URL_IMAGENS_PRODUTO",
+                "value": "$(CONTA_ARMAZENAMENTO_ARQUIVOS_URL_IMAGENS_PRODUTO)", 
+                "slotSetting": false
+              },
+              {
+                "name": "CURRENT_ENVIRONMENT",
+                "value": "$(CURRENT_ENVIRONMENT)", 
+                "slotSetting": false
+              },
+              {
+                "name": "USAR_LOGIN_TESTE",
+                "value": "$(USAR_LOGIN_TESTE)", 
+                "slotSetting": false
+              },
+
+
+              {
+                "name": "TYPEORM_DATABASE",
+                "value": "$(TYPEORM_DATABASE)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_ENTITIES",
+                "value": "$(TYPEORM_ENTITIES)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_HOST",
+                "value": "$(TYPEORM_HOST)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_LOGGING",
+                "value": "$(TYPEORM_LOGGING)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_MIGRATIONS",
+                "value": "$(TYPEORM_MIGRATIONS)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_MIGRATIONS_DIR",
+                "value": "$(TYPEORM_MIGRATIONS_DIR)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_MIGRATIONS_TABLE_NAME",
+                "value": "$(TYPEORM_MIGRATIONS_TABLE_NAME)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_PASSWORD",
+                "value": "$(TYPEORM_PASSWORD)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_SYNCHRONIZE",
+                "value": "$(TYPEORM_SYNCHRONIZE)", 
+                "slotSetting": false
+              },
+              {
+                "name": "TYPEORM_USERNAME",
+                "value": "$(TYPEORM_USERNAME)", 
+                "slotSetting": false
+              }
+            ]
+
+- stage: Build
+  displayName: Build stage
+  variables:
+  - template: azure-dev-br__variaveis__teste.yml
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+      
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.16.0'
+      displayName: 'Install Node.js'
+
+    - script: |
+        npm install
+        npm run prod:tsc
+        npm run prod-migration:run
+      displayName: 'npm install, tsc, migration'
+      
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    environment: $(environmentName)
+    pool: 
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:            
+          - task: AzureWebApp@1
+            displayName: 'Azure Web App Deploy: api-admin-teste'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: webAppLinux
+              appName: $(webAppName)
+              runtimeStack: 'NODE|12 LTS.12 LTS'
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+              startUpCommand: 'npm run prod-api-admin'
