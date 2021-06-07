@@ -19,7 +19,7 @@ export class ValidacaoDados {
     }
 
     valido = () => {
-        return this.erros.length == 0;
+        return this.erros.length === 0;
     }
 
     adicionarMensagem = (mensagem: string) => {
@@ -83,7 +83,7 @@ export class ValidacaoDados {
 
     //number
     menorMaior = (valor: number, minimo: number, maximo: number, mensagem: string) => {
-        if (!valor) return;
+        if (this.nullOuUndefined(valor)) return;
 
         if (valor < minimo || valor > maximo)
             this.erros.push({ mensagem });
@@ -91,21 +91,21 @@ export class ValidacaoDados {
 
     //string
     tamanhoMinimo = (valor: string, minimo: number, mensagem: string) => {
-        if (!valor) return;
+        if (this.nullOuUndefined(valor)) return;
 
         if (valor.trim().length < minimo)
             this.erros.push({ mensagem });
     }
 
     tamanhoMaximo = (valor: string, maximo: number, mensagem: string) => {
-        if (!valor) return;
+        if (this.nullOuUndefined(valor)) return;
 
         if (valor.trim().length > maximo)
             this.erros.push({ mensagem });
     }
 
     tamanhoMinMax = (valor: string, minimo: number, maximo: number, mensagem: string) => {
-        if (!valor) return;
+        if (this.nullOuUndefined(valor)) return;
 
         valor = valor.trim();
 
@@ -123,7 +123,7 @@ export class ValidacaoDados {
     }
 
     tamanhoIgual = (valor: string, tamanho: number, mensagem: string) => {
-        if (!valor) return;
+        if (this.nullOuUndefined(valor)) return;
 
         if (valor.trim().length != tamanho)
             this.erros.push({ mensagem });
@@ -181,5 +181,9 @@ export class ValidacaoDados {
             return true;
 
         return false;
+    }
+
+    private nullOuUndefined = (valor: any) => {
+        return valor === null || valor === undefined;
     }
 }

@@ -5,8 +5,12 @@ import { TipoCliente } from "../../../../entidades";
 import { TipoClienteRepositorio } from "../../../../repositorios/tipo-cliente.repositorio";
 
 export class CadastroTipoClienteServicoApp extends ServicoAplicacao {
-    private readonly _validacaoDados = new ValidacaoDados();
-    private readonly _tipoClienteRepositorio = new TipoClienteRepositorio();
+    constructor(
+        private readonly _validacaoDados: ValidacaoDados,
+        private readonly _tipoClienteRepositorio: TipoClienteRepositorio
+    ) {
+        super();
+    }
 
     async executar(model: CadastroTipoClienteViewModelServicoApp) {
         const dadosCadastro = this.validarCadastro(model);

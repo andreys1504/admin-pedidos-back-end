@@ -3,7 +3,7 @@ import azure from 'azure-storage';
 import { ConfiguracoesGlobaisApp } from '../../../../0-core/configuracoes-aplicacoes/configuracoes-globais.app';
 import { gerarGuid } from '../../../../0-core/helpers';
 
-const blobService = azure.createBlobService(ConfiguracoesGlobaisApp.CONTA_ARMAZENAMENTO_ARQUIVOS_CONFIGURACOES_ACESSO);
+const blobService = azure.createBlobService('AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;');
 
 const enviarImagem = async (imagem: string): Promise<string> => {
     const imagemMatches = imagem.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
