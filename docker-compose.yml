@@ -1,14 +1,30 @@
 version: '3.1'
 
 services:
-  banco-dados:
-    image: postgres
-    container_name: admin-pedidos-banco-dados
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: 123456
-    ports:
-      - "5432:5432"
-    volumes:
-      - C:\dev\postgre-sql\Docker\admin-pedidos\data:/var/lib/postgresql/data 
+    banco-dados:
+        image: postgres
+        container_name: admin-pedidos-banco-dados
+        restart: always
+        environment:
+          POSTGRES_PASSWORD: 123456
+        ports:
+            - "5432:5432"
+        volumes:
+            - C:\dev\postgre-sql\Docker\admin-pedidos\data:/var/lib/postgresql/data 
+        networks:
+            - back-end-admin-pedidos-network
 
+    storage:
+        image: "mcr.microsoft.com/azure-storage/azurite"
+        container_name: admin-pedidos-storage
+        ports:
+            - 10016:10000
+            - 10017:10001
+        volumes:
+            - c:\dev\azurite\AdminPedidos:/data
+        networks:
+            - back-end-admin-pedidos-network
+            
+networks: 
+  back-end-admin-pedidos-network:
+    driver: bridge

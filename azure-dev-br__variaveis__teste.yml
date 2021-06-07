@@ -1,0 +1,3 @@
+variables:
+- group: global_apis__desenvolvimento
+- group: type-orm__desenvolvimento
