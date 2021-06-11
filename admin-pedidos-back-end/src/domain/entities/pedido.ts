@@ -8,7 +8,7 @@ import { TipoPagamentoPedido } from "./tipo-pagamento-pedido";
 import { PedidoItem } from "./pedido-item";
 import { TipoPedido } from "./tipo-pedido";
 import { dataAAAAMMDD, gerarGuid } from "../../core/helpers";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import { PedidoDadosEntrega } from "./pedido-dados-entrega";
 import { IdsUsuariosAdminConstante } from "../constants/usuario-admin/ids-usuarios-admin.constante";
 import { IdsSituacoesExternasPedidoConstante } from "../constants/situacao-externa-pedido/ids-situacoes-externas-pedido.constante";
@@ -16,7 +16,7 @@ import { IdTiposPedidosConstante } from "../constants/tipo-pedido/ids-tipos-pedi
 import { IdsTiposPagamentoConstante } from "../constants/tipo-pagamento/ids-tipos-pagamento.constante";
 
 @Entity(DatabaseTables.PEDIDO)
-export class Pedido extends Entidade {
+export class Pedido extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 

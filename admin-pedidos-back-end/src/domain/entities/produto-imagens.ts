@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 
 import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import { Produto } from "./produto";
 
 @Entity(DatabaseTables.PRODUTO_IMAGENS)
-export class ProdutoImagens extends Entidade {
+export class ProdutoImagens extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 

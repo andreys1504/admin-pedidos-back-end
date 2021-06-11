@@ -1,2 +1,2 @@
-export abstract class Entidade {
+export abstract class Entity {
 }

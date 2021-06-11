@@ -2,10 +2,10 @@ import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
 
 import { DatabaseTables } from "../../core/infra/data/database-tables";
 import { Produto } from "./produto";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 
 @Entity(DatabaseTables.TIPO_PRODUTO)
-export class TipoProduto extends Entidade {
+export class TipoProduto extends EntityDomain {
     @PrimaryColumn({ name: "id", type: 'integer' })
     id: number;
 

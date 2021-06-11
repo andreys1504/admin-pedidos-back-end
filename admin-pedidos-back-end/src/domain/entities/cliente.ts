@@ -3,10 +3,10 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 import { TipoCliente } from "./tipo-cliente";
 import { Pedido } from "./pedido";
 import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 
 @Entity(DatabaseTables.CLIENTE)
-export class Cliente extends Entidade {
+export class Cliente extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 

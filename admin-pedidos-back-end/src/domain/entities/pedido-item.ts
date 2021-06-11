@@ -5,12 +5,12 @@ import { Pedido } from "./pedido";
 import { Produto } from './produto';
 import { SituacaoInternaItemPedido } from "./situacao-interna-item-pedido";
 import { SituacaoExternaItemPedido } from "./situacao-externa-item-pedido";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import { IdsSituacoesInternasItemPedidoConstante } from "../constants/situacao-interna-item-pedido/ids-situacoes-internas-item-pedido.constante";
 import { IdsSituacoesExternasItemPedidoConstante } from "../constants/situacao-externa-item-pedido/ids-situacoes-externas-item-pedido.constante";
 
 @Entity(DatabaseTables.PEDIDO_ITEM)
-export class PedidoItem extends Entidade {
+export class PedidoItem extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 

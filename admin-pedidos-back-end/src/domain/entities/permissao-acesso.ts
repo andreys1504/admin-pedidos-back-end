@@ -1,10 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 
 @Entity(DatabaseTables.PERMISSAO_ACESSO)
-export class PermissaoAcesso extends Entidade {
+export class PermissaoAcesso extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 

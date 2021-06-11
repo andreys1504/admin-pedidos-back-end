@@ -10,12 +10,12 @@ import {
 import { DatabaseTables } from "../../core/infra/data/database-tables";
 import { PermissaoAcesso } from "./permissao-acesso";
 import { Pedido } from "./pedido";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import md5 from "md5";
 import { GlobalSettings } from "../../core/configurations/global-settings";
 
 @Entity(DatabaseTables.USUARIO_ADMIN)
-export class UsuarioAdmin extends Entidade {
+export class UsuarioAdmin extends EntityDomain {
   @PrimaryGeneratedColumn({ name: "id", type: "integer" })
   id: number;
 

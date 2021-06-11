@@ -6,7 +6,7 @@
   "main": "",
   "scripts": {
     "start-api-admin": "npm-run-all start1",
-    "start1": "npx ts-node-dev --inspect --respawn src/apis/api-admin/index.ts --ignore-watch __testes__",
+    "start1": "npx ts-node-dev --inspect --respawn src/apis/api-admin/index.ts --ignore-watch __tests__",
     "start:api-admin:dist": "node ./dist/apis/api-admin/index.js",
     "tsc": "tsc --project tsconfig.json",
     "migration:generate": "npx ts-node ./node_modules/typeorm/cli migration:generate --config .env --name migracao-inicial",

@@ -12,7 +12,7 @@ module.exports = {
   //collectCoverageFrom: ["src/**"],
 
   // The directory where Jest should output its coverage files
-  //coverageDirectory: "__testes__/coverage",
+  //coverageDirectory: "__tests__/coverage",
 
   // A preset that is used as a base for Jest's configuration
   preset: 'ts-jest',
@@ -21,5 +21,5 @@ module.exports = {
   testEnvironment: 'node',
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["**/__testes__/**/*.teste.ts?(x)"]
+  testMatch: ["**/__tests__/**/*.tests.ts?(x)"]
 };

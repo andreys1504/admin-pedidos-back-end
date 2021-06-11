@@ -2,13 +2,13 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne } from "typeorm";
 
 import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { Entidade } from "../../core/domain/entities/entity";
+import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import { TransportadoraFrete } from "./transportadora-frete";
 import { Pedido } from "./pedido";
 import { IdsTransportadoraFreteConstante } from "../constants/transportadora-frete/ids-transportadora-frete.constante";
 
 @Entity(DatabaseTables.PEDIDO_DADOS_ENTREGA)
-export class PedidoDadosEntrega extends Entidade {
+export class PedidoDadosEntrega extends EntityDomain {
     @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
     id: number;
 
