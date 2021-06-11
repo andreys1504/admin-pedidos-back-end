@@ -7,12 +7,12 @@ export class CadastroSituacaoExternaPedidoAppService extends AppService {
     private readonly situacaoExternaRepository = new SituacaoExternaPedidoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async handle(model: {
+    async handle(request: {
         id: number;
         descricao: string;
         ativo: boolean
     }) {
-        const dadosCadastro = this.validarCadastro(model);
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());

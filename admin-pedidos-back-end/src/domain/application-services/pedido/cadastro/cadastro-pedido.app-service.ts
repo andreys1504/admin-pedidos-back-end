@@ -8,8 +8,8 @@ export class CadastroPedidoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
     private readonly pedidoRepository = new PedidoRepository();
 
-    async handle(model: CadastroPedidoRequest) {
-        const dadosCadastro = this.validarCadastro(model);
+    async handle(request: CadastroPedidoRequest) {
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
@@ -44,8 +44,8 @@ export class CadastroPedidoAppService extends AppService {
         return this.returnSuccess(novoPedido);
     }
 
-    private validarCadastro(model: CadastroPedidoRequest) {
-        const dadosCadastro = model;
+    private validarCadastro(request: CadastroPedidoRequest) {
+        const dadosCadastro = request;
 
         this.validacaoDados.obrigatorio(dadosCadastro.dataEmissaoPedido, 'Informe a DATA DE EMISSÃO do pedido');
         this.validacaoDados.obrigatorio(dadosCadastro.idSituacaoExternaPedido, 'Informe a SITUAÇÃO EXTERNA DO PEDIDO');

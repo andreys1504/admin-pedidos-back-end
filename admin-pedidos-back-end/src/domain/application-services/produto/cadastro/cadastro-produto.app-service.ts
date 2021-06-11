@@ -9,17 +9,17 @@ export class CadastroProdutoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
     private readonly produtoRepository = new ProdutoRepository();
 
-    async handle(model: CadastroProdutoRequest) {
-        const dadosCadastro = this.validarCadastro(model);
+    async handle(request: CadastroProdutoRequest) {
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
 
-        if ((await this.produtoPorDescricao(model.descricao)))
+        if ((await this.produtoPorDescricao(request.descricao)))
             return this.returnNotifications([{ mensagem: `PRODUTO (${dadosCadastro.descricao}) existente no sistema` }]);
 
-        let nomesImagensDestaque = await this.configurarImagensProduto(model.imagensDestaqueEmBase64);
-        let nomesDemaisImagens = await this.configurarImagensProduto(model.demaisImagensEmBase64);
+        let nomesImagensDestaque = await this.configurarImagensProduto(request.imagensDestaqueEmBase64);
+        let nomesDemaisImagens = await this.configurarImagensProduto(request.demaisImagensEmBase64);
 
         const produto = new Produto();
         produto.novoProduto({
@@ -28,8 +28,8 @@ export class CadastroProdutoAppService extends AppService {
             nomesImagensDestaque,
             idTipoProduto: dadosCadastro.idTipoProduto,
             nomesDemaisImagens,
-            detalhesProduto: model.detalhesProduto,
-            destaqueTelaPrincipal: model.destaqueTelaPrincipal
+            detalhesProduto: request.detalhesProduto,
+            destaqueTelaPrincipal: request.destaqueTelaPrincipal
         });
         await this.produtoRepository.salvarEntidade(produto);
         return this.returnSuccess(produto);

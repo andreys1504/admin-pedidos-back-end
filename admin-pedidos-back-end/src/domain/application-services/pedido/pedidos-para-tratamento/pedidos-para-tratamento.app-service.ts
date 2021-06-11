@@ -8,8 +8,8 @@ import { PedidosParaTratamentoRequest } from "./pedidos-para-tratamento.request"
 export class PedidosParaTratamentoAppService extends AppService {
     private readonly pedidoRepository = new PedidoRepository();
 
-    async handle(model: PedidosParaTratamentoRequest) {
-        const pedidos = await this.buscarPedidosParaEdicao(model);
+    async handle(request: PedidosParaTratamentoRequest) {
+        const pedidos = await this.buscarPedidosParaEdicao(request);
 
         return this.returnSuccess(pedidos);
     }

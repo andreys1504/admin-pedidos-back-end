@@ -12,8 +12,8 @@ export class CadastroTipoClienteAppService extends AppService {
         super();
     }
 
-    async handle(model: CadastroTipoClienteRequest) {
-        const dadosCadastro = this.validarCadastro(model);
+    async handle(request: CadastroTipoClienteRequest) {
+        const dadosCadastro = this.validarCadastro(request);
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
 

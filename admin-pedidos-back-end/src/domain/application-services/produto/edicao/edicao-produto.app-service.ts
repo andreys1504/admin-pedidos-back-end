@@ -11,20 +11,20 @@ export class EdicaoProdutoAppService extends AppService {
     private readonly produtoRepository = new ProdutoRepository();
     private readonly produtosParaEdicaoAppService = new ProdutosParaEdicaoAppService();
 
-    async handle(model: EdicaoProdutoRequest) {
-        const dadosEdicao = this.validarEdicao(model);
+    async handle(request: EdicaoProdutoRequest) {
+        const dadosEdicao = this.validarEdicao(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
 
-        const produtoEdicao = await this.produtoParaEdicao(model.idProduto);
+        const produtoEdicao = await this.produtoParaEdicao(request.idProduto);
         if (!produtoEdicao)
             throw new Error('produto inválido');
 
         if (produtoEdicao.descricao != dadosEdicao.descricao) {
             const produtoPorDescricao = await this.idProdutoPorDescricao({
                 novaDescricao: dadosEdicao.descricao,
-                idProduto: model.idProduto
+                idProduto: request.idProduto
             });
 
             if (produtoPorDescricao)
@@ -36,17 +36,17 @@ export class EdicaoProdutoAppService extends AppService {
         let nomesImagensProdutoParaAlteracao = [] as ProdutoImagens[];
 
         nomesImagensProdutoParaAlteracao = await this.configurarImagensProduto({
-            novasImagensEmBase64: model.novasImagensDestaqueEmBase64,
+            novasImagensEmBase64: request.novasImagensDestaqueEmBase64,
             nomesImagensAtuaisProduto: imagensAtuais.filter(x => x.imagemDestaque === true).map(x => x.nomeArquivo),
-            nomesImagensAtuaisParaAlteracao: model.imagensDestaqueOriginais,
+            nomesImagensAtuaisParaAlteracao: request.imagensDestaqueOriginais,
             idProduto: produtoEdicao.id,
             imagemDestaque: true
         });
 
         (await this.configurarImagensProduto({
-            novasImagensEmBase64: model.novasDemaisImagensEmBase64,
+            novasImagensEmBase64: request.novasDemaisImagensEmBase64,
             nomesImagensAtuaisProduto: imagensAtuais.filter(x => x.imagemDestaque === false).map(x => x.nomeArquivo),
-            nomesImagensAtuaisParaAlteracao: model.demaisImagensOriginais,
+            nomesImagensAtuaisParaAlteracao: request.demaisImagensOriginais,
             idProduto: produtoEdicao.id,
             imagemDestaque: false
         })).map(x => nomesImagensProdutoParaAlteracao.push(x));

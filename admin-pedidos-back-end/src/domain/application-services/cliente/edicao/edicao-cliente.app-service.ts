@@ -9,8 +9,8 @@ export class EdicaoClienteAppService extends AppService {
     private readonly clienteRepository = new ClienteRepository();
     private readonly clientesParaEdicaoDadosAppService = new ClientesParaEdicaoDadosAppService();
 
-    async handle(model: EdicaoClienteRequest) {
-        const dadosEdicao = this.validarDadosEdicao(model);
+    async handle(request: EdicaoClienteRequest) {
+        const dadosEdicao = this.validarDadosEdicao(request);
 
         if (!this.validacaoDados.valido() || !dadosEdicao.idCliente)
             return this.returnNotifications(this.validacaoDados.recuperarErros());

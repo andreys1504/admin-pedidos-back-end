@@ -10,18 +10,18 @@ export class AutenticacaoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: AutenticacaoRequest) {
-        this.validacaoDados.obrigatorio(model.nomeUsuario, 'Login não informado');
-        this.validacaoDados.tamanhoMaximo(model.nomeUsuario, 20, 'Usuário ou senha inválidos');
-        this.validacaoDados.obrigatorio(model.senha, 'SENHA não informada');
-        this.validacaoDados.tamanhoMaximo(model.senha, 20, 'Usuário ou senha inválidos');
+    async handle(request: AutenticacaoRequest) {
+        this.validacaoDados.obrigatorio(request.nomeUsuario, 'Login não informado');
+        this.validacaoDados.tamanhoMaximo(request.nomeUsuario, 20, 'Usuário ou senha inválidos');
+        this.validacaoDados.obrigatorio(request.senha, 'SENHA não informada');
+        this.validacaoDados.tamanhoMaximo(request.senha, 20, 'Usuário ou senha inválidos');
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         const usuario = await this.usuarioAdminRepository.autenticar({
-            nomeUsuario: model.nomeUsuario,
-            senha: UsuarioAdmin.gerarSenha(model.senha)
+            nomeUsuario: request.nomeUsuario,
+            senha: UsuarioAdmin.gerarSenha(request.senha)
         });
 
         if (!usuario)

@@ -5,12 +5,12 @@ import { DesativacaoUsuarioAdminRequest } from "./desativacao-usuario-admin.requ
 export class DesativacaoUsuarioAdminAppService extends AppService {
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: DesativacaoUsuarioAdminRequest) {
-        if (model.idUsuarioRealizacaoOperacao == model.idUsuarioASerDesativado)
+    async handle(request: DesativacaoUsuarioAdminRequest) {
+        if (request.idUsuarioRealizacaoOperacao == request.idUsuarioASerDesativado)
             throw new Error('operação inválida');
 
         const opcoesBuscaPorId: any = {};
-        opcoesBuscaPorId.filtro = { id: model.idUsuarioASerDesativado };
+        opcoesBuscaPorId.filtro = { id: request.idUsuarioASerDesativado };
         const usuarioEdicao = await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaPorId);
         if (!usuarioEdicao)
             throw new Error('operação inválida');

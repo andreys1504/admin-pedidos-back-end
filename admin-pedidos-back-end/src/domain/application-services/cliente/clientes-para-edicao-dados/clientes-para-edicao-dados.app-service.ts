@@ -10,11 +10,11 @@ export class ClientesParaEdicaoDadosAppService extends AppService {
     private readonly tipoClienteRepository = new TipoClienteRepository();
     private readonly clienteRepository = new ClienteRepository();
 
-    async handle(model: ClientesParaEdicaoDadosRequest) {
-        if (!model.nomeCpfCnpj)
+    async handle(request: ClientesParaEdicaoDadosRequest) {
+        if (!request.nomeCpfCnpj)
             return this.returnNotifications([{ mensagem: '' }]);
 
-        const clientes = await this.buscarClientesParaEdicaoDados(model.nomeCpfCnpj);
+        const clientes = await this.buscarClientesParaEdicaoDados(request.nomeCpfCnpj);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());

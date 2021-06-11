@@ -20,8 +20,8 @@ export class ClienteParaCadastroAppService extends AppService {
         ];
     }
 
-    async handle(model: ClientesParaCadastroPedidoRequest) {
-        const nomeCpfCnpj = model.nomeCpfCnpj;
+    async handle(request: ClientesParaCadastroPedidoRequest) {
+        const nomeCpfCnpj = request.nomeCpfCnpj;
         if (!nomeCpfCnpj)
             return this.returnNotifications([{ mensagem: '' }]);
 

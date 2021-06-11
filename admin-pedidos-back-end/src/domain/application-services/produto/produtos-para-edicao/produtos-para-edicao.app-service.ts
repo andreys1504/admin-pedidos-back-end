@@ -10,7 +10,7 @@ export class ProdutosParaEdicaoAppService extends AppService {
     private readonly produtoRepository = new ProdutoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async handle(model: ProdutosParaEdicaoRequest) {
+    async handle(request: ProdutosParaEdicaoRequest) {
         const tiposProduto = await this.tiposProduto();
 
         let opcoesBusca: any = {};
@@ -20,22 +20,22 @@ export class ProdutosParaEdicaoAppService extends AppService {
 
         let produtos: Produto[] = [];
 
-        if (model.descricao) {
-            this.validacaoDados.obrigatorio(model.descricao, 'PRODUTO não informado');
-            if (!Produto.nomeProdutoValido(model.descricao))
+        if (request.descricao) {
+            this.validacaoDados.obrigatorio(request.descricao, 'PRODUTO não informado');
+            if (!Produto.nomeProdutoValido(request.descricao))
                 this.validacaoDados.adicionarMensagem('PRODUTO inválido');
 
             if (!this.validacaoDados.valido())
                 return this.returnNotifications([]);
 
             produtos = await this.produtoRepository.produtosPorConteudoDescricao({
-                descricao: model.descricao,
+                descricao: request.descricao,
                 camposRetorno: opcoesBusca.camposRetorno,
                 retornarImagens: opcoesBusca.retornarImagens
             });
         }
-        else if (model.idProduto)
-            opcoesBusca.filtro = { id: model.idProduto };
+        else if (request.idProduto)
+            opcoesBusca.filtro = { id: request.idProduto };
 
         produtos = await this.produtoRepository.retornarColecaoEntidade(opcoesBusca);
 

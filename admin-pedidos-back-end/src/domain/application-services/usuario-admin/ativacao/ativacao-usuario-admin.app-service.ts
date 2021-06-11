@@ -5,12 +5,12 @@ import { AtivacaoUsuarioAdminRequest } from "./ativacao-usuario-admin.request";
 export class AtivacaoUsuarioAdminAppService extends AppService {
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: AtivacaoUsuarioAdminRequest) {
-        if (model.idUsuarioRealizacaoOperacao == model.idUsuarioASerAtivado)
+    async handle(request: AtivacaoUsuarioAdminRequest) {
+        if (request.idUsuarioRealizacaoOperacao == request.idUsuarioASerAtivado)
             throw new Error('operação inválida');
 
         const opcoesBuscaPorId: any = {};
-        opcoesBuscaPorId.filtro = { id: model.idUsuarioASerAtivado };
+        opcoesBuscaPorId.filtro = { id: request.idUsuarioASerAtivado };
         const usuarioEdicao = await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaPorId);
         if (!usuarioEdicao)
             throw new Error('operação inválida');

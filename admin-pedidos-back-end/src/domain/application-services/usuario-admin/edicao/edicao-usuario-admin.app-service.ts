@@ -10,8 +10,8 @@ export class EdicaoUsuarioAdminAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: EdicaoUsuarioAdminRequest) {
-        const dadosValidados = this.validarEdicao(model);
+    async handle(request: EdicaoUsuarioAdminRequest) {
+        const dadosValidados = this.validarEdicao(request);
 
         const senhaEditada = dadosValidados.senhaEditada;
         const dadosEdicao = dadosValidados;

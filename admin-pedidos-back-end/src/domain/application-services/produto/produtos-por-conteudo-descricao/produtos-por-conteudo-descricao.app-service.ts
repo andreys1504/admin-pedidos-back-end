@@ -10,9 +10,9 @@ export class ProdutosPorConteudoDescricaoAppService extends AppService {
     private readonly tipoProdutoRepository = new TipoProdutoRepository();
     private readonly produtoRepository = new ProdutoRepository();
 
-    async handle(model: ProdutosPorConteudoDescricaoRequest) {
-        this.validacaoDados.obrigatorio(model.descricao, 'PRODUTO não informado');
-        if (!Produto.nomeProdutoValido(model.descricao))
+    async handle(request: ProdutosPorConteudoDescricaoRequest) {
+        this.validacaoDados.obrigatorio(request.descricao, 'PRODUTO não informado');
+        if (!Produto.nomeProdutoValido(request.descricao))
             this.validacaoDados.adicionarMensagem('PRODUTO inválido');
 
         if (!this.validacaoDados.valido())
@@ -29,7 +29,7 @@ export class ProdutosPorConteudoDescricaoAppService extends AppService {
             'tipoProdutoId'
         ];
         let produtos = await this.produtoRepository.produtosPorConteudoDescricao({
-            descricao: model.descricao,
+            descricao: request.descricao,
             camposRetorno: camposRetornoProdutos
         });
 

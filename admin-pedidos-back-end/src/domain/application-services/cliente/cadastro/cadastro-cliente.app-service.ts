@@ -8,8 +8,8 @@ export class CadastroClienteAppService extends AppService {
     private readonly clienteRepository = new ClienteRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async handle(model: CadastroClienteRequest) {
-        const dadosCadastro = this.validarCadastro(model);
+    async handle(request: CadastroClienteRequest) {
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());

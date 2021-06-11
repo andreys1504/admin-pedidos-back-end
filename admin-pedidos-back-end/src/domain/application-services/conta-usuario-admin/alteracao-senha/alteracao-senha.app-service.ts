@@ -8,23 +8,23 @@ export class AlteracaoSenhaAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: AlteracaoSenhaRequest) {
-        model = this.validarAlteracaoSenha(model);
+    async handle(request: AlteracaoSenhaRequest) {
+        request = this.validarAlteracaoSenha(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let opcoesBuscaUsuario: any = {};
         opcoesBuscaUsuario.filtro = {
-            nomeUsuario: model.nomeUsuario,
-            senha: UsuarioAdmin.gerarSenha(model.senhaAtual)
+            nomeUsuario: request.nomeUsuario,
+            senha: UsuarioAdmin.gerarSenha(request.senhaAtual)
         };
 
         const usuarioEdicao = await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaUsuario);
         if (!usuarioEdicao)
             return this.returnNotifications([{ mensagem: 'SENHA ATUAL inválida' }]);
 
-        usuarioEdicao.alterarSenha(model.confirmacaoNovaSenha);
+        usuarioEdicao.alterarSenha(request.confirmacaoNovaSenha);
         await this.usuarioAdminRepository.salvarEntidade(usuarioEdicao);
 
         return this.returnSuccess({ mensagem: 'Senha alterada com sucesso' });

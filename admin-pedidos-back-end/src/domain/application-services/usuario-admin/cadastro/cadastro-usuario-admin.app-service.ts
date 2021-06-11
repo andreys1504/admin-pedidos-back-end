@@ -10,8 +10,8 @@ export class CadastroUsuarioAdminAppService extends AppService {
     private readonly permissaoAcessoRepository = new PermissaoAcessoRepository();
     private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async handle(model: CadastroUsuarioAdminRequest) {
-        const dadosCadastro = this.validarCadastro(model);
+    async handle(request: CadastroUsuarioAdminRequest) {
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());

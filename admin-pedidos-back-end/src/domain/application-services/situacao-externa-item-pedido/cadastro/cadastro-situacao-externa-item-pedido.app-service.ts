@@ -3,17 +3,16 @@ import { ValidacaoDados } from "../../../../core/helpers";
 import { SituacaoExternaItemPedidoRepository } from "../../../../infra/data/repositories/situacao-externa-item-pedido.repository";
 import { SituacaoExternaItemPedido } from "../../../entities";
 
-
 export class CadastroSituacaoExternaItemPedidoAppService extends AppService {
     private readonly situacaoExternaItemRepository = new SituacaoExternaItemPedidoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async handle(model: {
+    async handle(request: {
         id: number;
         descricao: string;
         ativo: boolean;
     }) {
-        const dadosCadastro = this.validarCadastro(model);
+        const dadosCadastro = this.validarCadastro(request);
 
         if (!this.validacaoDados.valido())
             return this.returnNotifications(this.validacaoDados.recuperarErros());
