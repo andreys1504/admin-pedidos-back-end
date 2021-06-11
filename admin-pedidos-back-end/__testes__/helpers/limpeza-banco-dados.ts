@@ -1,21 +1,21 @@
 import { getManager, Connection } from "typeorm";
 import dotenv from 'dotenv';
 dotenv.config({ path: './ormconfig.test.env' });
-import { TabelasBancoDados } from "../../src/0-core/infra/dados/tabelas-banco-dados.app";
-import { conectarBancoDados } from "../../src/1-infra/dados/banco-dados/conexao-banco-dados.app";
+import { DatabaseTables } from "../../src/core/infra/data/database-tables";
+import { databaseConnection } from "../../src/infra/data/database/database-connection";
 
 export const limpezaDadosInicioTeste = async () => {
     const entidadesDeletarDados = [
-        TabelasBancoDados.PEDIDO_ITEM,
-        TabelasBancoDados.PEDIDO,
-        TabelasBancoDados.USUARIO_PERMISSOES,
-        TabelasBancoDados.USUARIO_ADMIN,
-        TabelasBancoDados.CLIENTE,
-        TabelasBancoDados.PRODUTO,
-        TabelasBancoDados.USUARIO_CLIENTE
+        DatabaseTables.PEDIDO_ITEM,
+        DatabaseTables.PEDIDO,
+        DatabaseTables.USUARIO_PERMISSOES,
+        DatabaseTables.USUARIO_ADMIN,
+        DatabaseTables.CLIENTE,
+        DatabaseTables.PRODUTO,
+        DatabaseTables.USUARIO_CLIENTE
     ];
 
-    const conexaoBancoDados = await conectarBancoDados(process.env);
+    const conexaoBancoDados = await databaseConnection(process.env);
     if (conexaoBancoDados)
         await limparDadosBanco({ conexaoBancoDados, entidadesDeletarDados });
 }
