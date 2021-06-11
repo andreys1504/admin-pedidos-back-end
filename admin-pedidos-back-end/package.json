@@ -9,7 +9,7 @@
     "start1": "npx ts-node-dev --inspect --respawn src/apis/api-admin/index.ts --ignore-watch __testes__",
     "start:api-admin:dist": "node ./dist/apis/api-admin/index.js",
     "tsc": "tsc --project tsconfig.json",
-    "migration:generate": "npx ts-node ./node_modules/typeorm/cli migration:generate --config .env --name tipo-pedido",
+    "migration:generate": "npx ts-node ./node_modules/typeorm/cli migration:generate --config .env --name migracao-inicial",
     "migration:run": "npx ts-node ./node_modules/typeorm/cli migration:run --config .env",
     "prod-migration:run": "npx ts-node ./node_modules/typeorm/cli migration:run --config ormconfig.js",
     "prod-migration:run2": "typeorm migration:run --config ormconfig.js",

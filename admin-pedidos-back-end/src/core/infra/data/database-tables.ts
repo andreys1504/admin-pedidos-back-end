@@ -13,7 +13,6 @@ export enum DatabaseTables {
     SITUACAO_EXTERNA_ITEM_PEDIDO = 'situacaoExternaItemPedido',
     PRODUTO = 'produto',
     TIPO_PEDIDO = 'tipoPedido',
-    USUARIO_CLIENTE = 'usuarioCliente',
     TIPO_PRODUTO = 'tipoProduto',
     TRANSPORTADORA_FRETE = 'transportadoraFrete',
     PEDIDO_DADOS_ENTREGA = 'pedidoDadosEntrega',
