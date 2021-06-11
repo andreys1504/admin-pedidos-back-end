@@ -1,25 +1,25 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { extrairNumerosTexto, ValidacaoDados } from "../../../../core/helpers";
-import { ClienteRepositorio } from "../../../../infra/data/repositories/cliente.repositorio";
+import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
 import { Cliente } from "../../../entities";
 import { CadastroClienteRequest } from "./cadastro-cliente.request";
 
 export class CadastroClienteAppService extends AppService {
-    private readonly clienteRepositorio = new ClienteRepositorio();
+    private readonly clienteRepository = new ClienteRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: CadastroClienteRequest) {
+    async handle(model: CadastroClienteRequest) {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let opcoesBuscaPorCpfCnpj: any = {
             camposRetorno: ['id'],
             filtro: { cpfCnpj: dadosCadastro.cpfCnpj }
         };
-        if ((await this.clienteRepositorio.retornarEntidade(opcoesBuscaPorCpfCnpj)))
-            return this.retornoErro([{ mensagem: 'CPF/CNPJ já existente no sistema' }]);
+        if ((await this.clienteRepository.retornarEntidade(opcoesBuscaPorCpfCnpj)))
+            return this.returnNotifications([{ mensagem: 'CPF/CNPJ já existente no sistema' }]);
 
         const novoCliente = new Cliente();
         novoCliente.novoCliente({
@@ -36,9 +36,9 @@ export class CadastroClienteAppService extends AppService {
             tipoSanguineo: dadosCadastro.tipoSanguineo,
             medidasCliente: dadosCadastro.medidasCliente
         });
-        await this.clienteRepositorio.salvarEntidade(novoCliente);
+        await this.clienteRepository.salvarEntidade(novoCliente);
 
-        return this.retornoSucesso<Cliente>(novoCliente);
+        return this.returnSuccess<Cliente>(novoCliente);
     }
 
     private validarCadastro(dadosRequisicao: CadastroClienteRequest) {

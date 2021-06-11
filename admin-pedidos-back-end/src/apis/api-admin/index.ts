@@ -2,24 +2,23 @@ import 'reflect-metadata';
 import dotenv from 'dotenv';
 import { Environments } from '../../core/configurations/environments';
 
-const ambiente = process.env.CURRENT_ENVIRONMENT || Environments.DESENVOLVIMENTO_LOCAL;
-if (ambiente === Environments.DESENVOLVIMENTO_LOCAL)
+const environment = process.env.CURRENT_ENVIRONMENT || Environments.DESENVOLVIMENTO_LOCAL;
+if (environment === Environments.DESENVOLVIMENTO_LOCAL)
     dotenv.config();
 
 import { databaseConnection } from '../../infra/data/database/database-connection';
-import App from './app';
-import { ConfiguracoesApiAdminApp } from './configs/configuracoes-api-admin.app';
-
+import App from './configurations/app';
+import { apiSettings } from './configurations/api-settings';
 
 databaseConnection(process.env);
-const servidor = new App().servidor; 
+const server = new App().server; 
 
 console.log('');
 console.log('');
-console.log('ambiente: ' + ambiente);
+console.log('ambiente: ' + environment);
 
-const portaAcessoApp = process.env.PORT || ConfiguracoesApiAdminApp.API_ADMIN;
-servidor.listen(portaAcessoApp, () => { 
+const port = process.env.PORT || apiSettings.API_ADMIN_PORT;
+server.listen(port, () => { 
     console.log('===API ADMIN===');
-    console.log('porta: ' + portaAcessoApp + '\n--\n\n')
+    console.log('porta: ' + port + '\n--\n\n')
 });

@@ -11,4 +11,3 @@ export * from './tipo-pagamento-pedido';
 export * from './tipo-pedido';
 export * from './tipo-produto';
 export * from './usuario-admin';
-export * from './usuario-cliente';

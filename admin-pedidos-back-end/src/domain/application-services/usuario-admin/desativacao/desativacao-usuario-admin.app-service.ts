@@ -1,23 +1,23 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { UsuarioAdminRepositorio } from "../../../../infra/data/repositories/usuario-admin.repositorio";
+import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
 import { DesativacaoUsuarioAdminRequest } from "./desativacao-usuario-admin.request";
 
 export class DesativacaoUsuarioAdminAppService extends AppService {
-    private readonly usuarioAdminRepositorio = new UsuarioAdminRepositorio();
+    private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async executar(model: DesativacaoUsuarioAdminRequest) {
+    async handle(model: DesativacaoUsuarioAdminRequest) {
         if (model.idUsuarioRealizacaoOperacao == model.idUsuarioASerDesativado)
             throw new Error('operação inválida');
 
         const opcoesBuscaPorId: any = {};
         opcoesBuscaPorId.filtro = { id: model.idUsuarioASerDesativado };
-        const usuarioEdicao = await this.usuarioAdminRepositorio.retornarEntidade(opcoesBuscaPorId);
+        const usuarioEdicao = await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaPorId);
         if (!usuarioEdicao)
             throw new Error('operação inválida');
 
         usuarioEdicao.desativar();
-        await this.usuarioAdminRepositorio.salvarEntidade(usuarioEdicao);
+        await this.usuarioAdminRepository.salvarEntidade(usuarioEdicao);
 
-        return this.retornoSucesso('Usuário desativado');
+        return this.returnSuccess('Usuário desativado');
     }
 }

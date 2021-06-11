@@ -1,19 +1,19 @@
 import { CadastroPedidoRequestApi } from "./cadastro-pedido.request-api";
 import { CadastroPedidoAppService } from "../../../../../domain/application-services/pedido/cadastro/cadastro-pedido.app-service";
 import { CadastroPedidoRequest } from "../../../../../domain/application-services/pedido/cadastro/cadastro-pedido.request";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
 
-export class CadastroPedidoController extends ControllerApiAdmin {
-    private readonly cadastroPedidoServicoApp = new CadastroPedidoAppService();
+export class CadastroPedidoController extends ApiAdminController {
+    private readonly appService = new CadastroPedidoAppService();
 
-    async executar(contexto: RouteContext) {
-        const idUsuarioRegistroPedido = this.dadosTokenAutenticacaoUsuarioAdmin(contexto.requisicao).idUsuario;
-        const modelServicoApp = (contexto.requisicao.body as CadastroPedidoRequestApi) as CadastroPedidoRequest;
-        modelServicoApp.idUsuarioRegistroPedido = idUsuarioRegistroPedido;
+    async handle(routeContext: RouteContext) {
+        const idUsuarioRegistroPedido = this.authenticatedUser(routeContext.request).idUsuario;
+        const requestAppService = (routeContext.request.body as CadastroPedidoRequestApi) as CadastroPedidoRequest;
+        requestAppService.idUsuarioRegistroPedido = idUsuarioRegistroPedido;
 
-        const resultadoServico = await this.cadastroPedidoServicoApp.executar(modelServicoApp);
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.CADASTRO);
+        const responseAppService = await this.appService.handle(requestAppService);
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

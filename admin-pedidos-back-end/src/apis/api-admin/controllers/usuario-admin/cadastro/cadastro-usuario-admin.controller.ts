@@ -1,15 +1,15 @@
 import { CadastroUsuarioAdminRequestApi } from "./cadastro-usuario-admin.request-api";
 import { CadastroUsuarioAdminAppService } from "../../../../../domain/application-services/usuario-admin/cadastro/cadastro-usuario-admin.app-service";
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
+import { ApiAdminController } from "../../api-admin-controller";
+import { RouteContext } from "../../../configurations/routes/route-context";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
 
-export class CadastroUsuarioAdminController extends ControllerApiAdmin {
-    private readonly cadastroUsuarioAdminServicoApp = new CadastroUsuarioAdminAppService();
+export class CadastroUsuarioAdminController extends ApiAdminController {
+    private readonly appService = new CadastroUsuarioAdminAppService();
 
-    async executar(contexto: RouteContext) {
-        const dadosCadastro = contexto.requisicao.body as CadastroUsuarioAdminRequestApi;
-        const resultadoServico = await this.cadastroUsuarioAdminServicoApp.executar(dadosCadastro);
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.CADASTRO);
+    async handle(routeContext: RouteContext) {
+        const requestApi = routeContext.request.body as CadastroUsuarioAdminRequestApi;
+        const responseAppService = await this.appService.handle(requestApi);
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

@@ -1,10 +1,10 @@
 import { Repository, FindManyOptions, FindOneOptions, getManager } from "typeorm";
 
 export abstract class RepositoryBase<TEntidade> {
-    private readonly _repositorio: Repository<TEntidade>;
+    private readonly repositorio: Repository<TEntidade>;
 
     constructor(nomeEntidade: string) {
-        this._repositorio = getManager().getRepository(nomeEntidade);
+        this.repositorio = getManager().getRepository(nomeEntidade);
     }
 
     get contextoBase() {
@@ -31,7 +31,7 @@ export abstract class RepositoryBase<TEntidade> {
         if (opcoesBusca.ordernacao)
             opcoesBuscaDadosOrm.order = opcoesBusca.ordernacao;
 
-        const entidade = await this._repositorio.findOne(opcoesBuscaDadosOrm);
+        const entidade = await this.repositorio.findOne(opcoesBuscaDadosOrm);
         return entidade;
     }
 
@@ -56,12 +56,12 @@ export abstract class RepositoryBase<TEntidade> {
         if (opcoesBusca.ordernacao)
             opcoesBuscaDadosOrm.order = opcoesBusca.ordernacao;
 
-        const entidade = await this._repositorio.find(opcoesBuscaDadosOrm);
+        const entidade = await this.repositorio.find(opcoesBuscaDadosOrm);
         return entidade;
     }
 
     public async salvarEntidade(entidade: TEntidade) {
-        await this._repositorio.save(entidade);
+        await this.repositorio.save(entidade);
     }
 
     protected async retornarDadosPorSql<TRetorno>(opcoesBusca: { 

@@ -1,25 +1,25 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { ProdutoRepositorio } from "../../../../infra/data/repositories/produto.repositorio";
-import { TipoProdutoRepositorio } from "../../../../infra/data/repositories/tipo-produto.repositorio";
+import { ProdutoRepository } from "../../../../infra/data/repositories/produto.repository";
+import { TipoProdutoRepository } from "../../../../infra/data/repositories/tipo-produto.repository";
 import { Produto, TipoProduto } from "../../../entities";
 import { ProdutosPorConteudoDescricaoRequest } from "./produtos-por-conteudo-descricao.request";
 
 export class ProdutosPorConteudoDescricaoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly tipoProdutoRepositorio = new TipoProdutoRepositorio();
-    private readonly produtoRepositorio = new ProdutoRepositorio();
+    private readonly tipoProdutoRepository = new TipoProdutoRepository();
+    private readonly produtoRepository = new ProdutoRepository();
 
-    async executar(model: ProdutosPorConteudoDescricaoRequest) {
+    async handle(model: ProdutosPorConteudoDescricaoRequest) {
         this.validacaoDados.obrigatorio(model.descricao, 'PRODUTO não informado');
         if (!Produto.nomeProdutoValido(model.descricao))
             this.validacaoDados.adicionarMensagem('PRODUTO inválido');
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro([]);
+            return this.returnNotifications([]);
 
         const opcoesBuscaTipos: any = { camposRetorno: ['id', 'descricao'] };
-        const tiposProduto = await this.tipoProdutoRepositorio.retornarColecaoEntidade(opcoesBuscaTipos);
+        const tiposProduto = await this.tipoProdutoRepository.retornarColecaoEntidade(opcoesBuscaTipos);
 
         const camposRetornoProdutos = [
             'id',
@@ -28,7 +28,7 @@ export class ProdutosPorConteudoDescricaoAppService extends AppService {
             'valorUnitario',
             'tipoProdutoId'
         ];
-        let produtos = await this.produtoRepositorio.produtosPorConteudoDescricao({
+        let produtos = await this.produtoRepository.produtosPorConteudoDescricao({
             descricao: model.descricao,
             camposRetorno: camposRetornoProdutos
         });
@@ -36,7 +36,7 @@ export class ProdutosPorConteudoDescricaoAppService extends AppService {
         if (tiposProduto && tiposProduto.length > 0 && produtos && produtos.length > 0)
             produtos = this.vincularTipoProduto({ produtos, tiposProduto });
 
-        return this.retornoSucesso(produtos);
+        return this.returnSuccess(produtos);
     }
 
     private vincularTipoProduto(entidades: {

@@ -1,18 +1,18 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { PedidoRepositorio } from "../../../../infra/data/repositories/pedido.repositorio";
+import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
 import { Pedido } from "../../../entities";
 import { CadastroPedidoRequest, ItemPedidoCadastroModel } from "./cadastro-pedido.request";
 
 export class CadastroPedidoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly pedidoRepositorio = new PedidoRepositorio();
+    private readonly pedidoRepository = new PedidoRepository();
 
-    async executar(model: CadastroPedidoRequest) {
+    async handle(model: CadastroPedidoRequest) {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let itensPedido = dadosCadastro.itensPedido.map((item: ItemPedidoCadastroModel) => {
             return {
@@ -40,8 +40,8 @@ export class CadastroPedidoAppService extends AppService {
             itensPedido: itensPedido
         });
 
-        await this.pedidoRepositorio.salvarEntidade(novoPedido);
-        return this.retornoSucesso(novoPedido);
+        await this.pedidoRepository.salvarEntidade(novoPedido);
+        return this.returnSuccess(novoPedido);
     }
 
     private validarCadastro(model: CadastroPedidoRequest) {

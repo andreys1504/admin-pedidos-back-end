@@ -1,16 +1,16 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { SituacaoExternaItemPedidoRepositorio } from "../../../../infra/data/repositories/situacao-externa-item-pedido.repositorio";
+import { SituacaoExternaItemPedidoRepository } from "../../../../infra/data/repositories/situacao-externa-item-pedido.repository";
 
 export class SituacoesExternasItemPedidoAtivasAppService extends AppService {
-    private readonly situacaoExternaItemRepositorio = new SituacaoExternaItemPedidoRepositorio();
+    private readonly situacaoExternaItemRepository = new SituacaoExternaItemPedidoRepository();
 
-    async executar() {
+    async handle() {
         let opcoesBusca: any = {};
         opcoesBusca.camposRetorno = ['id', 'descricao'];
         opcoesBusca.ordenacao = { descricao: 'ASC' };
         opcoesBusca.filtro = { ativo: true };
 
-        const situacoesExternasItem = await this.situacaoExternaItemRepositorio.retornarColecaoEntidade(opcoesBusca);
-        return this.retornoSucesso(situacoesExternasItem);
+        const situacoesExternasItem = await this.situacaoExternaItemRepository.retornarColecaoEntidade(opcoesBusca);
+        return this.returnSuccess(situacoesExternasItem);
     }
 }

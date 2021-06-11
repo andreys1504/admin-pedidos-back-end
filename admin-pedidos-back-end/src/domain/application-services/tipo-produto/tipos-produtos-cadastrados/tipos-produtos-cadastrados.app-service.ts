@@ -1,14 +1,14 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { TipoProdutoRepositorio } from "../../../../infra/data/repositories/tipo-produto.repositorio";
+import { TipoProdutoRepository } from "../../../../infra/data/repositories/tipo-produto.repository";
 
 export class TiposProdutosCadastradosAppService extends AppService {
-    private readonly tipoProdutoRepositorio = new TipoProdutoRepositorio();
+    private readonly tipoProdutoRepository = new TipoProdutoRepository();
 
-    async executar() {
+    async handle() {
         const opcoesBusca: any = { camposRetorno: ['id', 'descricao', 'ativo'] };
         opcoesBusca.ordenacao = { descricao: 'ASC' };
-        const tiposProduto = await this.tipoProdutoRepositorio.retornarColecaoEntidade(opcoesBusca);
+        const tiposProduto = await this.tipoProdutoRepository.retornarColecaoEntidade(opcoesBusca);
 
-        return this.retornoSucesso(tiposProduto);
+        return this.returnSuccess(tiposProduto);
     }
 }

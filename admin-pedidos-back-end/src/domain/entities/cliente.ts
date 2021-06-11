@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 
 import { TipoCliente } from "./tipo-cliente";
 import { Pedido } from "./pedido";
-import { UsuarioCliente } from "./usuario-cliente";
 import { DatabaseTables } from "../../core/infra/data/database-tables";
 import { Entidade } from "../../core/domain/entities/entity";
 
@@ -54,9 +53,6 @@ export class Cliente extends Entidade {
     @OneToMany(type => Pedido, pedido => pedido.cliente)
     pedidos: Pedido[];
 
-    @OneToOne(type => UsuarioCliente, usuarioCliente => usuarioCliente.cliente)
-    usuarioCliente: UsuarioCliente;
-
     @Column({ name: "dataCriacao", type: 'timestamp' })
     dataCriacao: Date;
 
@@ -91,54 +87,6 @@ export class Cliente extends Entidade {
         this.medidasCliente = cliente.medidasCliente;
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
-    }
-
-    novoClientePorLojaVirtual(cliente: {
-        idTipoCliente: number,
-        cpfCnpj: string,
-        nome: string,
-        usuarioCliente: {
-            nomeUsuario: string,
-            senha: string
-        }
-    }) {
-        this.nome = cliente.nome;
-        this.nomeGuerra = null;
-        this.tipoClienteId = cliente.idTipoCliente;
-        this.cpfCnpj = cliente.cpfCnpj;
-        this.logradouro = null;
-        this.cep = null;
-        this.nomeCidade = null;
-        this.siglaUf = null;
-        this.telefone = null;
-        this.email = null;
-        this.tipoSanguineo = null;
-        this.medidasCliente = null;
-        this.dataCriacao = new Date();
-        this.dataAtualizacao = new Date();
-
-        const usuarioCliente = new UsuarioCliente();
-        usuarioCliente.novoUsuarioPorLojaVirtual({
-            nome: cliente.nome,
-            nomeUsuario: cliente.usuarioCliente.nomeUsuario,
-            senha: cliente.usuarioCliente.senha,
-            idCliente: this.id
-        });
-        this.usuarioCliente = usuarioCliente;
-    }
-
-    vincularUsuarioCliente(dadosUsuarioCliente: {
-        nomeUsuario: string;
-        senha: string;
-    }) {
-        const usuarioCliente = new UsuarioCliente();
-        usuarioCliente.novoUsuarioPorLojaVirtual({
-            nome: this.nome,
-            nomeUsuario: dadosUsuarioCliente.nomeUsuario,
-            senha: dadosUsuarioCliente.senha,
-            idCliente: this.id
-        });
-        this.usuarioCliente = usuarioCliente;
     }
 
     static nomeClienteValido(valor: string) {

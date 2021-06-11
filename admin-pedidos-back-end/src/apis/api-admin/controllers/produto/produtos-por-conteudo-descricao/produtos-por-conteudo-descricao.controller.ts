@@ -1,14 +1,14 @@
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { ProdutosPorConteudoDescricaoAppService } from "../../../../../domain/application-services/produto/produtos-por-conteudo-descricao/produtos-por-conteudo-descricao.app-service";
 
-export class ProdutosPorConteudoDescricaoController extends ControllerApiAdmin {
-    private readonly produtosPorConteudoDescricaoServicoApp = new ProdutosPorConteudoDescricaoAppService();
+export class ProdutosPorConteudoDescricaoController extends ApiAdminController {
+    private readonly appService = new ProdutosPorConteudoDescricaoAppService();
 
-    async executar(contexto: RouteContext) {
-        const descricao = contexto.requisicao.params.descricao;
-        const resultadoServico = await this.produtosPorConteudoDescricaoServicoApp.executar({ descricao });
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.LISTAGEM);
+    async handle(routeContext: RouteContext) {
+        const descricao = routeContext.request.params.descricao;
+        const responseAppService = await this.appService.handle({ descricao });
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

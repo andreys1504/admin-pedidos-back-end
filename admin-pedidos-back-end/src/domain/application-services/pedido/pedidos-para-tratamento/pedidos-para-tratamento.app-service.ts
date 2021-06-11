@@ -1,21 +1,21 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { Nulo, Nao } from "../../../../core/helpers";
 import { DatabaseTables } from "../../../../core/infra/data/database-tables";
-import { ClienteRepositorio } from "../../../../infra/data/repositories/cliente.repositorio";
-import { PedidoRepositorio } from "../../../../infra/data/repositories/pedido.repositorio";
+import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
+import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
 import { PedidosParaTratamentoRequest } from "./pedidos-para-tratamento.request";
 
 export class PedidosParaTratamentoAppService extends AppService {
-    private readonly pedidoRepositorio = new PedidoRepositorio();
+    private readonly pedidoRepository = new PedidoRepository();
 
-    async executar(model: PedidosParaTratamentoRequest) {
+    async handle(model: PedidosParaTratamentoRequest) {
         const pedidos = await this.buscarPedidosParaEdicao(model);
 
-        return this.retornoSucesso(pedidos);
+        return this.returnSuccess(pedidos);
     }
 
     private async buscarPedidosParaEdicao(filtros: PedidosParaTratamentoRequest) {
-        const clienteRepositorio = new ClienteRepositorio();
+        const clienteRepository = new ClienteRepository();
         const opcoesBusca: any = {};
         opcoesBusca.filtro = {};
 
@@ -25,7 +25,7 @@ export class PedidosParaTratamentoAppService extends AppService {
             const opcoesBusca: any = {
                 filtro: { cpfCnpj: filtros.cpfCnpj }
             };
-            const idCliente = (await clienteRepositorio.retornarEntidade(opcoesBusca))?.id;
+            const idCliente = (await clienteRepository.retornarEntidade(opcoesBusca))?.id;
             if (idCliente)
                 opcoesBusca.filtro = { clienteId: idCliente };
         }
@@ -67,6 +67,6 @@ export class PedidosParaTratamentoAppService extends AppService {
             'itensPedido.' + DatabaseTables.SITUACAO_INTERNA_ITEM_PEDIDO,
         ]
 
-        return await this.pedidoRepositorio.retornarColecaoEntidade(opcoesBusca);
+        return await this.pedidoRepository.retornarColecaoEntidade(opcoesBusca);
     }
 }

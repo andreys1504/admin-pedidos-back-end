@@ -1,13 +1,13 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { SituacaoInternaItemPedidoRepositorio } from "../../../../infra/data/repositories/situacao-interna-item-pedido.repositorio";
+import { SituacaoInternaItemPedidoRepository } from "../../../../infra/data/repositories/situacao-interna-item-pedido.repository";
 import { SituacaoInternaItemPedido } from "../../../entities";
 
 export class CadastroSituacaoInternaItemPedidoAppService extends AppService {
-    private readonly situacaoInternaItemRepositorio = new SituacaoInternaItemPedidoRepositorio();
+    private readonly situacaoInternaItemRepository = new SituacaoInternaItemPedidoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: {
+    async handle(model: {
         id: number;
         descricao: string;
         ativo: boolean;
@@ -15,19 +15,19 @@ export class CadastroSituacaoInternaItemPedidoAppService extends AppService {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
         
         const opcoesBuscaPorId: any = {};
         opcoesBuscaPorId.camposRetorno = ['id'];
         opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.situacaoInternaItemRepositorio.retornarEntidade(opcoesBuscaPorId))
-            return this.retornoErro([{ mensagem: 'ID já existente no sistema' }]);
+        if (await this.situacaoInternaItemRepository.retornarEntidade(opcoesBuscaPorId))
+            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
         
         const opcoesBuscaPorDescricao: any = {};
         opcoesBuscaPorDescricao.camposRetorno = ['id'];
         opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao };
-        if (await this.situacaoInternaItemRepositorio.retornarEntidade(opcoesBuscaPorDescricao))
-            return this.retornoErro([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
+        if (await this.situacaoInternaItemRepository.retornarEntidade(opcoesBuscaPorDescricao))
+            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
         
         const situacaoInternaItemPedido = new SituacaoInternaItemPedido();
         situacaoInternaItemPedido.novaSituacaoInternaItemPedido({
@@ -35,9 +35,9 @@ export class CadastroSituacaoInternaItemPedidoAppService extends AppService {
             descricao: dadosCadastro.descricao,
             ativo: dadosCadastro.ativo
         })
-        await this.situacaoInternaItemRepositorio.salvarEntidade(situacaoInternaItemPedido);
+        await this.situacaoInternaItemRepository.salvarEntidade(situacaoInternaItemPedido);
 
-        return this.retornoSucesso(situacaoInternaItemPedido);
+        return this.returnSuccess(situacaoInternaItemPedido);
     }
 
     private validarCadastro(dadosCadastro: {

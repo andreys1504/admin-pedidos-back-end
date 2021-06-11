@@ -1,31 +1,31 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { extrairNumerosTexto, ValidacaoDados } from "../../../../core/helpers";
-import { ClienteRepositorio } from "../../../../infra/data/repositories/cliente.repositorio";
-import { TipoClienteRepositorio } from "../../../../infra/data/repositories/tipo-cliente.repositorio";
+import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
+import { TipoClienteRepository } from "../../../../infra/data/repositories/tipo-cliente.repository";
 import { Cliente, TipoCliente } from "../../../entities";
 import { ClientesParaEdicaoDadosRequest } from "./clientes-para-edicao-dados.request";
 
 export class ClientesParaEdicaoDadosAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly tipoClienteRepositorio = new TipoClienteRepositorio();
-    private readonly clienteRepositorio = new ClienteRepositorio();
+    private readonly tipoClienteRepository = new TipoClienteRepository();
+    private readonly clienteRepository = new ClienteRepository();
 
-    async executar(model: ClientesParaEdicaoDadosRequest) {
+    async handle(model: ClientesParaEdicaoDadosRequest) {
         if (!model.nomeCpfCnpj)
-            return this.retornoErro([{ mensagem: '' }]);
+            return this.returnNotifications([{ mensagem: '' }]);
 
         const clientes = await this.buscarClientesParaEdicaoDados(model.nomeCpfCnpj);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
-        return this.retornoSucesso(clientes);
+        return this.returnSuccess(clientes);
     }
 
     private async buscarClientesParaEdicaoDados(nomeCpfCnpj: string) {
         let clientes: Cliente[] = [];
 
-        const tiposClientes = await this.tipoClienteRepositorio
+        const tiposClientes = await this.tipoClienteRepository
             .retornarColecaoEntidade({ camposRetorno: ['id', 'descricao'] });
 
         const opcoesBusca: any = {};
@@ -39,7 +39,7 @@ export class ClientesParaEdicaoDadosAppService extends AppService {
 
             if (this.validacaoDados.valido()) {
                 opcoesBusca.filtro = { cpfCnpj };
-                clientes = await this.clienteRepositorio.retornarColecaoEntidade(opcoesBusca);
+                clientes = await this.clienteRepository.retornarColecaoEntidade(opcoesBusca);
             }
         }
         else {
@@ -48,7 +48,7 @@ export class ClientesParaEdicaoDadosAppService extends AppService {
 
             if (this.validacaoDados.valido()) {
                 opcoesBusca.filtro = { nome: nomeCpfCnpj };
-                clientes = await this.clienteRepositorio.clientesPorConteudoNome(opcoesBusca);
+                clientes = await this.clienteRepository.clientesPorConteudoNome(opcoesBusca);
             }
         }
 

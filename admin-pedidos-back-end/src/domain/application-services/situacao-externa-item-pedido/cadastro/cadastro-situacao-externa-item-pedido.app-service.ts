@@ -1,14 +1,14 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { SituacaoExternaItemPedidoRepositorio } from "../../../../infra/data/repositories/situacao-externa-item-pedido.repositorio";
+import { SituacaoExternaItemPedidoRepository } from "../../../../infra/data/repositories/situacao-externa-item-pedido.repository";
 import { SituacaoExternaItemPedido } from "../../../entities";
 
 
 export class CadastroSituacaoExternaItemPedidoAppService extends AppService {
-    private readonly situacaoExternaItemRepositorio = new SituacaoExternaItemPedidoRepositorio();
+    private readonly situacaoExternaItemRepository = new SituacaoExternaItemPedidoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: {
+    async handle(model: {
         id: number;
         descricao: string;
         ativo: boolean;
@@ -16,19 +16,19 @@ export class CadastroSituacaoExternaItemPedidoAppService extends AppService {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let opcoesBuscaPorId: any = {};
         opcoesBuscaPorId.camposRetorno = ['id'];
         opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.situacaoExternaItemRepositorio.retornarEntidade(opcoesBuscaPorId))
-            return this.retornoErro([{ mensagem: 'ID já existente no sistema' }]);
+        if (await this.situacaoExternaItemRepository.retornarEntidade(opcoesBuscaPorId))
+            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
 
         let opcoesBuscaPorDescricao: any = {};
         opcoesBuscaPorDescricao.camposRetorno = ['id'];
         opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao };
-        if (await this.situacaoExternaItemRepositorio.retornarEntidade(opcoesBuscaPorDescricao))
-            return this.retornoErro([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
+        if (await this.situacaoExternaItemRepository.retornarEntidade(opcoesBuscaPorDescricao))
+            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
 
         const situacaoExternaItemPedido = new SituacaoExternaItemPedido();
         situacaoExternaItemPedido.novaSituacaoExternaItemPedido({
@@ -36,9 +36,9 @@ export class CadastroSituacaoExternaItemPedidoAppService extends AppService {
             descricao: dadosCadastro.descricao,
             ativo: dadosCadastro.ativo
         })
-        await this.situacaoExternaItemRepositorio.salvarEntidade(situacaoExternaItemPedido);
+        await this.situacaoExternaItemRepository.salvarEntidade(situacaoExternaItemPedido);
 
-        return this.retornoSucesso(situacaoExternaItemPedido);
+        return this.returnSuccess(situacaoExternaItemPedido);
     }
 
     private validarCadastro(dadosCadastro: {

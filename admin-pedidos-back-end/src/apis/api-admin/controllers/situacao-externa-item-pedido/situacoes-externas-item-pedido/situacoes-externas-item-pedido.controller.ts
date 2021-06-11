@@ -1,13 +1,13 @@
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { SituacoesExternasItemPedidoAppService } from "../../../../../domain/application-services/situacao-externa-item-pedido/situacoes-externas-item-pedido/situacoes-externas-item-pedido.app-service";
 
-export class SituacoesExternasItemPedidoController extends ControllerApiAdmin {
-    private readonly situacoesExternasItemPedidoServicoApp = new SituacoesExternasItemPedidoAppService();
+export class SituacoesExternasItemPedidoController extends ApiAdminController {
+    private readonly appService = new SituacoesExternasItemPedidoAppService();
 
-    async executar(contexto: RouteContext) {
-        const resultadoServico = await this.situacoesExternasItemPedidoServicoApp.executar();
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.LISTAGEM);
+    async handle(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handle();
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

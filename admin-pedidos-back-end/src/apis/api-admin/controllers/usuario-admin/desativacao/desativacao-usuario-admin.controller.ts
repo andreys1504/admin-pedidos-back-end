@@ -1,18 +1,18 @@
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { DesativacaoUsuarioAdminAppService } from "../../../../../domain/application-services/usuario-admin/desativacao/desativacao-usuario-admin.app-service";
 
-export class DesativacaoUsuarioAdminController extends ControllerApiAdmin {
-    private readonly desativacaoUsuarioAdminServicoApp = new DesativacaoUsuarioAdminAppService();
+export class DesativacaoUsuarioAdminController extends ApiAdminController {
+    private readonly appService = new DesativacaoUsuarioAdminAppService();
 
-    async executar(contexto: RouteContext) {
-        const idUsuario = Number(contexto.requisicao.params.id);
+    async handle(routeContext: RouteContext) {
+        const idUsuario = Number(routeContext.request.params.id);
 
-        const resultadoServico = await this.desativacaoUsuarioAdminServicoApp.executar({
+        const responseAppService = await this.appService.handle({
             idUsuarioASerDesativado: idUsuario,
-            idUsuarioRealizacaoOperacao: this.dadosTokenAutenticacaoUsuarioAdmin(contexto.requisicao).idUsuario
+            idUsuarioRealizacaoOperacao: this.authenticatedUser(routeContext.request).idUsuario
         });
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.ATUALIZACAO);
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.ATUALIZACAO);
     }
 }

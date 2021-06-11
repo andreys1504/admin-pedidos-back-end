@@ -1,16 +1,16 @@
 import { EdicaoPedidoRequestApi } from "./edicao-pedido.request-api";
 import { EdicaoPedidoAppService } from "../../../../../domain/application-services/pedido/edicao/edicao-pedido.app-service";
 import { EdicaoPedidoRequest } from "../../../../../domain/application-services/pedido/edicao/edicao-pedido.request";
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
+import { ApiAdminController } from "../../api-admin-controller";
+import { RouteContext } from "../../../configurations/routes/route-context";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
 
-export class EdicaoPedidoController extends ControllerApiAdmin {
-    private readonly edicaoPedidoServicoApp = new EdicaoPedidoAppService();
+export class EdicaoPedidoController extends ApiAdminController {
+    private readonly appService = new EdicaoPedidoAppService();
 
-    async executar(contexto: RouteContext) {
-        const modelServicoApp = (contexto.requisicao.body as EdicaoPedidoRequestApi) as EdicaoPedidoRequest;
-        const resultadoServico = await this.edicaoPedidoServicoApp.executar(modelServicoApp);
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.ATUALIZACAO);
+    async handle(routeContext: RouteContext) {
+        const requestAppService = (routeContext.request.body as EdicaoPedidoRequestApi) as EdicaoPedidoRequest;
+        const responseAppService = await this.appService.handle(requestAppService);
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.ATUALIZACAO);
     }
 }

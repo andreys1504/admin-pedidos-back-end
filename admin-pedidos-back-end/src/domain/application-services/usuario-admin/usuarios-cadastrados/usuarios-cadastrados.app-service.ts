@@ -1,11 +1,11 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { UsuarioAdminRepositorio } from "../../../../infra/data/repositories/usuario-admin.repositorio";
+import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
 
 export class UsuariosCadastradosAppService extends AppService {
-    private readonly usuarioAdminRepositorio = new UsuarioAdminRepositorio();
+    private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async executar() {
-        const usuarios = await this.usuarioAdminRepositorio.usuarios();
-        return this.retornoSucesso(usuarios);
+    async handle() {
+        const usuarios = await this.usuarioAdminRepository.usuarios();
+        return this.returnSuccess(usuarios);
     }
 }

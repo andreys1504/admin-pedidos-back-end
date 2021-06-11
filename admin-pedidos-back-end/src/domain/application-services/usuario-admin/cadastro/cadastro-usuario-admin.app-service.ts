@@ -1,31 +1,30 @@
-import { autenticacaoUsuarioServico } from "../../../../apis/security/autenticacao-usuario.servico";
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { PermissaoAcessoRepositorio } from "../../../../infra/data/repositories/permissao-acesso.repositorio";
-import { UsuarioAdminRepositorio } from "../../../../infra/data/repositories/usuario-admin.repositorio";
-import { PermissaoAcesso, UsuarioAdmin } from "../../../entities";
+import { PermissaoAcessoRepository } from "../../../../infra/data/repositories/permissao-acesso.repository";
+import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
+import { gerarSenhaCodificada, PermissaoAcesso, UsuarioAdmin } from "../../../entities";
 import { CadastroUsuarioAdminRequest } from "./cadastro-usuario-admin.request";
 
 export class CadastroUsuarioAdminAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly permissaoAcessoRepositorio = new PermissaoAcessoRepositorio();
-    private readonly usuarioAdminRepositorio = new UsuarioAdminRepositorio();
+    private readonly permissaoAcessoRepository = new PermissaoAcessoRepository();
+    private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async executar(model: CadastroUsuarioAdminRequest) {
+    async handle(model: CadastroUsuarioAdminRequest) {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
-        if ((await this.usuarioAdminRepositorio.existenciaUsuarioPorNomeUsuario(dadosCadastro.nomeUsuario)) === true)
-            return this.retornoErro([{ mensagem: 'NOME DE USUÁRIO já existente no sistema' }]);
+        if ((await this.usuarioAdminRepository.existenciaUsuarioPorNomeUsuario(dadosCadastro.nomeUsuario)) === true)
+            return this.returnNotifications([{ mensagem: 'NOME DE USUÁRIO já existente no sistema' }]);
 
         let permissoesAcesso = new Array<PermissaoAcesso>();
         if (dadosCadastro.permissoes && dadosCadastro.permissoes.length > 0) {
             for (let i = 0; i < dadosCadastro.permissoes.length; i++) {
                 const opcoesBusca: any = {};
                 opcoesBusca.filtro = { chave: dadosCadastro.permissoes[i] };
-                const permissaoAcesso = await this.permissaoAcessoRepositorio.retornarEntidade(opcoesBusca);
+                const permissaoAcesso = await this.permissaoAcessoRepository.retornarEntidade(opcoesBusca);
                 if (!permissaoAcesso)
                     throw new Error('Permissão inexistente');
 
@@ -36,13 +35,13 @@ export class CadastroUsuarioAdminAppService extends AppService {
         const usuarioCadastro = new UsuarioAdmin();
         usuarioCadastro.novoUsuario({
             nomeUsuario: dadosCadastro.nomeUsuario,
-            senha: autenticacaoUsuarioServico.gerarSenhaCodificada(dadosCadastro.senha),
+            senha: gerarSenhaCodificada(dadosCadastro.senha),
             nome: dadosCadastro.nome,
             permissoesAcesso
         });
 
-        await this.usuarioAdminRepositorio.salvarEntidade(usuarioCadastro);
-        return this.retornoSucesso(usuarioCadastro);
+        await this.usuarioAdminRepository.salvarEntidade(usuarioCadastro);
+        return this.returnSuccess(usuarioCadastro);
     }
 
     private validarCadastro(dadosCadastro: CadastroUsuarioAdminRequest) {

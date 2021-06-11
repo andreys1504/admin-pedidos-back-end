@@ -1,13 +1,13 @@
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { TiposPedidoAppService } from "../../../../../domain/application-services/tipo-pedido/tipos-pedido/tipos-pedido.app-service";
 
-export class TiposPedidosController extends ControllerApiAdmin {
-    private readonly tiposPedidoServicoApp = new TiposPedidoAppService();
+export class TiposPedidosController extends ApiAdminController {
+    private readonly appService = new TiposPedidoAppService();
     
-    async executar(contexto: RouteContext) {
-        const tiposPedido = await this.tiposPedidoServicoApp.executar();
-        this.resultadoController(contexto.resposta, tiposPedido, ResponseApiStatusCode.LISTAGEM);
+    async handle(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handle();
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

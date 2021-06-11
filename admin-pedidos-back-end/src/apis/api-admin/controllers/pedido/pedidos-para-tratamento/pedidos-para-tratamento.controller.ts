@@ -1,21 +1,21 @@
 import { PedidosParaTratamentoRequestApi } from "./pedidos-para-tratamento.request-api";
 import { PedidosParaTratamentoAppService } from "../../../../../domain/application-services/pedido/pedidos-para-tratamento/pedidos-para-tratamento.app-service";
 import { PedidosParaTratamentoRequest } from "../../../../../domain/application-services/pedido/pedidos-para-tratamento/pedidos-para-tratamento.request";
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { recuperarValorBoleanoRequisicao } from "../../../../../core/helpers";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
 
-export class PedidosParaTratamentoController extends ControllerApiAdmin {
-    private readonly pedidosParaTratamentoServicoApp = new PedidosParaTratamentoAppService();
+export class PedidosParaTratamentoController extends ApiAdminController {
+    private readonly appService = new PedidosParaTratamentoAppService();
 
-    async executar(contexto: RouteContext) {
-        const dadosPesquisa = contexto.requisicao.query as unknown as PedidosParaTratamentoRequestApi;
-        dadosPesquisa.pedidosPendentes = recuperarValorBoleanoRequisicao(contexto.requisicao.query.pedidosPendentes as string);
-        dadosPesquisa.pedidoRealizadoLojaVirtual = recuperarValorBoleanoRequisicao(contexto.requisicao.query.pedidoRealizadoLojaVirtual as string) || false;
+    async handle(routeContext: RouteContext) {
+        const requestApi = routeContext.request.query as unknown as PedidosParaTratamentoRequestApi;
+        requestApi.pedidosPendentes = recuperarValorBoleanoRequisicao(routeContext.request.query.pedidosPendentes as string);
+        requestApi.pedidoRealizadoLojaVirtual = recuperarValorBoleanoRequisicao(routeContext.request.query.pedidoRealizadoLojaVirtual as string) || false;
 
-        const modelServicoApp = dadosPesquisa as PedidosParaTratamentoRequest;
-        const resultadoServico = await this.pedidosParaTratamentoServicoApp.executar(modelServicoApp);
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.LISTAGEM);
+        const requestAppService = requestApi as PedidosParaTratamentoRequest;
+        const responseAppService = await this.appService.handle(requestAppService);
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

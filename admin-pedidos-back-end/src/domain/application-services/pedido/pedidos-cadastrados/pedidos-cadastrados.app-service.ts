@@ -1,15 +1,15 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { PedidoRepositorio } from "../../../../infra/data/repositories/pedido.repositorio";
+import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
 
 export class PedidosCadastradosAppService extends AppService {
-    private readonly pedidoRepositorio = new PedidoRepositorio();
+    private readonly pedidoRepository = new PedidoRepository();
 
-    async executar() {
+    async handle() {
         const opcoesBusca: any = {};
         opcoesBusca.entidadesRelacionadas = ['itensPedido'];
         opcoesBusca.ordenacao = { id: 'DESC' };
 
-        const pedidos = await this.pedidoRepositorio.retornarColecaoEntidade(opcoesBusca);
-        return this.retornoSucesso(pedidos);
+        const pedidos = await this.pedidoRepository.retornarColecaoEntidade(opcoesBusca);
+        return this.returnSuccess(pedidos);
     }
 }

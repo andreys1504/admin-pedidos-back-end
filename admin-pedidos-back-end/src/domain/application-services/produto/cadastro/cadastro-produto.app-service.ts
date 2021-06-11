@@ -1,22 +1,22 @@
-import { envioImagensProdutosStorageServico } from "../../../../apis/security/storage-arquivos-aplicacoes/envio-imagens-produtos/envio-imagens-produtos-storage.servico";
+import { envioImagensProdutosStorageServico } from "../../../../infra/service/storage-files-service";
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { ProdutoRepositorio } from "../../../../infra/data/repositories/produto.repositorio";
+import { ProdutoRepository } from "../../../../infra/data/repositories/produto.repository";
 import { Produto } from "../../../entities";
 import { CadastroProdutoRequest } from "./cadastro-produto.request";
 
 export class CadastroProdutoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly produtoRepositorio = new ProdutoRepositorio();
+    private readonly produtoRepository = new ProdutoRepository();
 
-    async executar(model: CadastroProdutoRequest) {
+    async handle(model: CadastroProdutoRequest) {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         if ((await this.produtoPorDescricao(model.descricao)))
-            return this.retornoErro([{ mensagem: `PRODUTO (${dadosCadastro.descricao}) existente no sistema` }]);
+            return this.returnNotifications([{ mensagem: `PRODUTO (${dadosCadastro.descricao}) existente no sistema` }]);
 
         let nomesImagensDestaque = await this.configurarImagensProduto(model.imagensDestaqueEmBase64);
         let nomesDemaisImagens = await this.configurarImagensProduto(model.demaisImagensEmBase64);
@@ -31,8 +31,8 @@ export class CadastroProdutoAppService extends AppService {
             detalhesProduto: model.detalhesProduto,
             destaqueTelaPrincipal: model.destaqueTelaPrincipal
         });
-        await this.produtoRepositorio.salvarEntidade(produto);
-        return this.retornoSucesso(produto);
+        await this.produtoRepository.salvarEntidade(produto);
+        return this.returnSuccess(produto);
     }
 
     private validarCadastro(dadosCadastro: CadastroProdutoRequest) {
@@ -56,7 +56,7 @@ export class CadastroProdutoAppService extends AppService {
         opcoesBuscaIdProduto.filtro = { descricao };
         opcoesBuscaIdProduto.camposRetorno = ['id'];
 
-        return await this.produtoRepositorio.retornarEntidade(opcoesBuscaIdProduto);
+        return await this.produtoRepository.retornarEntidade(opcoesBuscaIdProduto);
     }
 
     private async configurarImagensProduto(imagensEmBase64: string[]) {

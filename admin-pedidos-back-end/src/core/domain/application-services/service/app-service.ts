@@ -1,18 +1,18 @@
 import { Notification } from "../../notifications/notification";
-import { ResponseService } from "../response/response-service";
+import { ResponseAppService } from "../response/response-app-service";
 
 export abstract class AppService {
-    protected retornoErro(mensagens: Notification[]) {
+    protected returnNotifications(notifications: Notification[]) {
         return {
-            sucesso: false,
-            mensagens
-        } as ResponseService<any>;
+            success: false,
+            notifications
+        } as ResponseAppService<any>;
     }
 
-    protected retornoSucesso<TRetorno>(dadosRetorno: TRetorno) {
+    protected returnSuccess<TRetorno>(dadosRetorno: TRetorno) {
         return {
-            sucesso: true,
-            dados: dadosRetorno
-        } as ResponseService<TRetorno>;
+            success: true,
+            data: dadosRetorno
+        } as ResponseAppService<TRetorno>;
     }
 }

@@ -1,4 +1,4 @@
-export interface EdicaoViewModelAppService {
+export interface EdicaoClienteRequest {
     id: number;
     nome: string;
     nomeGuerra: string;

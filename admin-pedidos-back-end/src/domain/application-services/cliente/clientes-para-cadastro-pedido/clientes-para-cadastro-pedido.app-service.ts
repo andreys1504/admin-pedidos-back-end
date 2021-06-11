@@ -1,11 +1,11 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { extrairNumerosTexto, ValidacaoDados } from "../../../../core/helpers";
-import { ClienteRepositorio } from "../../../../infra/data/repositories/cliente.repositorio";
+import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
 import { Cliente } from "../../../entities";
 import { ClientesParaCadastroPedidoRequest } from "./clientes-para-cadastro-pedido.request";
 
 export class ClienteParaCadastroAppService extends AppService {
-    private readonly clienteRepositorio = new ClienteRepositorio();
+    private readonly clienteRepository = new ClienteRepository();
     private readonly validacaoDados = new ValidacaoDados();
     private readonly camposRetorno: string[];
 
@@ -20,10 +20,10 @@ export class ClienteParaCadastroAppService extends AppService {
         ];
     }
 
-    async executar(model: ClientesParaCadastroPedidoRequest) {
+    async handle(model: ClientesParaCadastroPedidoRequest) {
         const nomeCpfCnpj = model.nomeCpfCnpj;
         if (!nomeCpfCnpj)
-            return this.retornoErro([{ mensagem: '' }]);
+            return this.returnNotifications([{ mensagem: '' }]);
 
         let clientes: Cliente[] = [];
 
@@ -34,9 +34,9 @@ export class ClienteParaCadastroAppService extends AppService {
             clientes = await this.clientesPorNome(nomeCpfCnpj);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
-        return this.retornoSucesso(clientes);
+        return this.returnSuccess(clientes);
     }
 
     private async clientesPorCpfCnpj(cpfCnpj: string) {
@@ -51,7 +51,7 @@ export class ClienteParaCadastroAppService extends AppService {
                 camposRetorno: this.camposRetorno
             };
 
-            const cliente = await this.clienteRepositorio.retornarEntidade(opcoesBuscaClientes);
+            const cliente = await this.clienteRepository.retornarEntidade(opcoesBuscaClientes);
 
             return (cliente ? [{ ...cliente }] : []) as Cliente[];
         }
@@ -70,7 +70,7 @@ export class ClienteParaCadastroAppService extends AppService {
                 camposRetorno: this.camposRetorno
             };
 
-            return await this.clienteRepositorio.clientesPorConteudoNome(opcoesBuscaClientesPorNome);
+            return await this.clienteRepository.clientesPorConteudoNome(opcoesBuscaClientesPorNome);
         }
 
         return [] as Cliente[];

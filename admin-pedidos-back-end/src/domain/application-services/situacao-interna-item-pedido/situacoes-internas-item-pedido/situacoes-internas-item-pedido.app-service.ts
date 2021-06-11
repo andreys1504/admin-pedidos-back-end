@@ -1,14 +1,14 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { SituacaoInternaItemPedidoRepositorio } from "../../../../infra/data/repositories/situacao-interna-item-pedido.repositorio";
+import { SituacaoInternaItemPedidoRepository } from "../../../../infra/data/repositories/situacao-interna-item-pedido.repository";
 
 export class SituacoesInternasItemPedidoAppService extends AppService{
-    private readonly situacaoInternaItemRepositorio = new SituacaoInternaItemPedidoRepositorio();
+    private readonly situacaoInternaItemRepository = new SituacaoInternaItemPedidoRepository();
 
-    async executar() {
+    async handle() {
         const opcoesBusca: any = { camposRetorno: ['id', 'descricao', 'ativo'] };
         opcoesBusca.ordenacao = { descricao: 'ASC' };
-        const situacoesInternasItem = await this.situacaoInternaItemRepositorio.retornarColecaoEntidade(opcoesBusca);
+        const situacoesInternasItem = await this.situacaoInternaItemRepository.retornarColecaoEntidade(opcoesBusca);
 
-        return this.retornoSucesso(situacoesInternasItem);
+        return this.returnSuccess(situacoesInternasItem);
     }
 }

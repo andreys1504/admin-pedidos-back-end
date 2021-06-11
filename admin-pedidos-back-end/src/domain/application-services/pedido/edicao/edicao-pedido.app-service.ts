@@ -2,19 +2,19 @@ import { EdicaoPedidoRequest, ItemPedidoEdicaoModel } from "./edicao-pedido.requ
 import { PedidosParaTratamentoAppService } from "../pedidos-para-tratamento/pedidos-para-tratamento.app-service";
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { PedidoRepositorio } from "../../../../infra/data/repositories/pedido.repositorio";
+import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
 import { PedidoItem } from "../../../entities";
 
 export class EdicaoPedidoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly pedidoRepositorio = new PedidoRepositorio();
-    private readonly pedidosParaTratamentoServicoApp = new PedidosParaTratamentoAppService();
+    private readonly pedidoRepository = new PedidoRepository();
+    private readonly pedidosParaTratamentoAppService = new PedidosParaTratamentoAppService();
 
-    async executar(model: EdicaoPedidoRequest) {
+    async handle(model: EdicaoPedidoRequest) {
         const dadosEdicao = this.validarEdicaoPedido(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let itensPedido = dadosEdicao.itensPedido.map((item: ItemPedidoEdicaoModel) => {
             const pedidoItem = new PedidoItem();
@@ -35,7 +35,7 @@ export class EdicaoPedidoAppService extends AppService {
         const opcoesBuscaPedido: any = {
             filtro: { id: dadosEdicao.idPedido }
         };
-        const pedidoParaEdicao = await this.pedidoRepositorio.retornarEntidade(opcoesBuscaPedido);
+        const pedidoParaEdicao = await this.pedidoRepository.retornarEntidade(opcoesBuscaPedido);
         if (!pedidoParaEdicao)
             throw new Error('PEDIDO inválido');
 
@@ -51,9 +51,9 @@ export class EdicaoPedidoAppService extends AppService {
             idUsuarioResponsavelPedido: dadosEdicao.idUsuarioResponsavelPedido
         });
 
-        await this.pedidoRepositorio.editar({ pedido: pedidoParaEdicao, pedidoItens: itensPedido });
+        await this.pedidoRepository.editar({ pedido: pedidoParaEdicao, pedidoItens: itensPedido });
 
-        const pedidoEditado = await this.pedidosParaTratamentoServicoApp.executar({
+        const pedidoEditado = await this.pedidosParaTratamentoAppService.handle({
             idPedido: pedidoParaEdicao.id,
             cpfCnpj: undefined,
             dataEmissaoPedido: undefined,
@@ -62,7 +62,7 @@ export class EdicaoPedidoAppService extends AppService {
             pedidoRealizadoLojaVirtual: false
         });
 
-        return this.retornoSucesso(pedidoEditado.dados[0]);
+        return this.returnSuccess(pedidoEditado.data[0]);
     }
 
     private validarEdicaoPedido(dadosEdicao: EdicaoPedidoRequest) {

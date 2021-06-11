@@ -1,16 +1,16 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { TipoPedidoRepositorio } from "../../../../infra/data/repositories/tipo-pedido.repositorio";
+import { TipoPedidoRepository } from "../../../../infra/data/repositories/tipo-pedido.repository";
 
 export class TiposPedidoAtivosAppService extends AppService {
-    private readonly tipoPedidoRepositorio = new TipoPedidoRepositorio();
+    private readonly tipoPedidoRepository = new TipoPedidoRepository();
     
-    async executar() {
+    async handle() {
         const opcoesBusca: any = {};
         opcoesBusca.camposRetorno = ['id', 'descricao'];
         opcoesBusca.ordenacao = { descricao: 'ASC' };
         opcoesBusca.filtro = { ativo: true };
 
-        const tiposPedido = await this.tipoPedidoRepositorio.retornarColecaoEntidade(opcoesBusca);
-        return this.retornoSucesso(tiposPedido);
+        const tiposPedido = await this.tipoPedidoRepository.retornarColecaoEntidade(opcoesBusca);
+        return this.returnSuccess(tiposPedido);
     }
 }

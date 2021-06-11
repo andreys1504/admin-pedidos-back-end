@@ -2,20 +2,20 @@ import { EdicaoProdutoRequest } from "./edicao-produto.request";
 import { ProdutosParaEdicaoAppService } from "../produtos-para-edicao/produtos-para-edicao.app-service";
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { Nao, ValidacaoDados } from "../../../../core/helpers";
-import { ProdutoRepositorio } from "../../../../infra/data/repositories/produto.repositorio";
+import { ProdutoRepository } from "../../../../infra/data/repositories/produto.repository";
 import { ProdutoImagens } from "../../../entities/produto-imagens";
-import { envioImagensProdutosStorageServico } from "../../../../apis/security/storage-arquivos-aplicacoes/envio-imagens-produtos/envio-imagens-produtos-storage.servico";
+import { envioImagensProdutosStorageServico } from "../../../../infra/service/storage-files-service";
 
 export class EdicaoProdutoAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly produtoRepositorio = new ProdutoRepositorio();
-    private readonly produtosParaEdicaoServicoApp = new ProdutosParaEdicaoAppService();
+    private readonly produtoRepository = new ProdutoRepository();
+    private readonly produtosParaEdicaoAppService = new ProdutosParaEdicaoAppService();
 
-    async executar(model: EdicaoProdutoRequest) {
+    async handle(model: EdicaoProdutoRequest) {
         const dadosEdicao = this.validarEdicao(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         const produtoEdicao = await this.produtoParaEdicao(model.idProduto);
         if (!produtoEdicao)
@@ -28,10 +28,10 @@ export class EdicaoProdutoAppService extends AppService {
             });
 
             if (produtoPorDescricao)
-                return this.retornoErro([{ mensagem: `PRODUTO (${dadosEdicao.descricao}) existente no sistema` }]);
+                return this.returnNotifications([{ mensagem: `PRODUTO (${dadosEdicao.descricao}) existente no sistema` }]);
         }
 
-        const imagensAtuais = await this.produtoRepositorio.imagensProduto(produtoEdicao.id);
+        const imagensAtuais = await this.produtoRepository.imagensProduto(produtoEdicao.id);
 
         let nomesImagensProdutoParaAlteracao = [] as ProdutoImagens[];
 
@@ -59,14 +59,14 @@ export class EdicaoProdutoAppService extends AppService {
             destaqueTelaPrincipal: dadosEdicao.destaqueTelaPrincipal
         });
 
-        await this.produtoRepositorio.editar({ produtoEdicao, imagensProduto: nomesImagensProdutoParaAlteracao });
+        await this.produtoRepository.editar({ produtoEdicao, imagensProduto: nomesImagensProdutoParaAlteracao });
 
-        const produtoRetorno = await this.produtosParaEdicaoServicoApp.executar({
+        const produtoRetorno = await this.produtosParaEdicaoAppService.handle({
             descricao: '',
             idProduto: produtoEdicao.id
         });
 
-        return this.retornoSucesso(produtoRetorno.dados[0]);
+        return this.returnSuccess(produtoRetorno.data[0]);
     }
 
     private validarEdicao(dadosEdicao: EdicaoProdutoRequest) {
@@ -121,12 +121,12 @@ export class EdicaoProdutoAppService extends AppService {
         opcoesBuscaPorDescricao.filtro = { descricao: dados.novaDescricao, id: Nao(dados.idProduto) }
         opcoesBuscaPorDescricao.camposRetorno = ['id'];
 
-        return await this.produtoRepositorio.retornarEntidade(opcoesBuscaPorDescricao);
+        return await this.produtoRepository.retornarEntidade(opcoesBuscaPorDescricao);
     }
 
     private async produtoParaEdicao(idProduto: number) {
         const opcoesBusca: any = {};
         opcoesBusca.filtro = { id: idProduto };
-        return await this.produtoRepositorio.retornarEntidade(opcoesBusca);
+        return await this.produtoRepository.retornarEntidade(opcoesBusca);
     }
 }

@@ -1,13 +1,13 @@
-import { ControllerApiAdmin } from "../../../../../core/apis/controllers/controller-api-admin";
-import { ResponseApiStatusCode } from "../../../../../core/apis/controllers/response-api-status-code";
-import { RouteContext } from "../../../../../core/apis/routes/route-context";
+import { ApiAdminController } from "../../api-admin-controller";
+import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { RouteContext } from "../../../configurations/routes/route-context";
 import { TiposPagamentoAppService } from "../../../../../domain/application-services/tipo-pagamento-pedido/tipos-pagamento/tipos-pagamento.app-service";
 
-export class TiposPagamentoController extends ControllerApiAdmin {
-    private readonly tiposPagamentoServicoApp = new TiposPagamentoAppService();
+export class TiposPagamentoController extends ApiAdminController {
+    private readonly appService = new TiposPagamentoAppService();
 
-    async executar(contexto: RouteContext) {
-        const resultadoServico = await this.tiposPagamentoServicoApp.executar();
-        this.resultadoController(contexto.resposta, resultadoServico, ResponseApiStatusCode.LISTAGEM);
+    async handle(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handle();
+        this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

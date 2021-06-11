@@ -1,16 +1,16 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { ProdutoRepositorio } from "../../../../infra/data/repositories/produto.repositorio";
-import { TipoProdutoRepositorio } from "../../../../infra/data/repositories/tipo-produto.repositorio";
+import { ProdutoRepository } from "../../../../infra/data/repositories/produto.repository";
+import { TipoProdutoRepository } from "../../../../infra/data/repositories/tipo-produto.repository";
 import { Produto, TipoProduto } from "../../../entities";
 import { ProdutosParaEdicaoRequest } from "./produtos-para-edicao.request";
 
 export class ProdutosParaEdicaoAppService extends AppService {
-    private readonly tipoProdutoRepositorio = new TipoProdutoRepositorio();
-    private readonly produtoRepositorio = new ProdutoRepositorio();
+    private readonly tipoProdutoRepository = new TipoProdutoRepository();
+    private readonly produtoRepository = new ProdutoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: ProdutosParaEdicaoRequest) {
+    async handle(model: ProdutosParaEdicaoRequest) {
         const tiposProduto = await this.tiposProduto();
 
         let opcoesBusca: any = {};
@@ -26,9 +26,9 @@ export class ProdutosParaEdicaoAppService extends AppService {
                 this.validacaoDados.adicionarMensagem('PRODUTO inválido');
 
             if (!this.validacaoDados.valido())
-                return this.retornoErro([]);
+                return this.returnNotifications([]);
 
-            produtos = await this.produtoRepositorio.produtosPorConteudoDescricao({
+            produtos = await this.produtoRepository.produtosPorConteudoDescricao({
                 descricao: model.descricao,
                 camposRetorno: opcoesBusca.camposRetorno,
                 retornarImagens: opcoesBusca.retornarImagens
@@ -37,13 +37,13 @@ export class ProdutosParaEdicaoAppService extends AppService {
         else if (model.idProduto)
             opcoesBusca.filtro = { id: model.idProduto };
 
-        produtos = await this.produtoRepositorio.retornarColecaoEntidade(opcoesBusca);
+        produtos = await this.produtoRepository.retornarColecaoEntidade(opcoesBusca);
 
         if (produtos && produtos.length > 0
             && tiposProduto && tiposProduto.length > 0)
             produtos = this.vincularTipoProduto({ produtos, tiposProduto });
 
-        return this.retornoSucesso(produtos);
+        return this.returnSuccess(produtos);
     }
 
     private vincularTipoProduto(entidades: {
@@ -65,6 +65,6 @@ export class ProdutosParaEdicaoAppService extends AppService {
             camposRetorno: ['id', 'descricao'],
             ordenacao: { descricao: 'ASC' }
         }
-        return await this.tipoProdutoRepositorio.retornarColecaoEntidade(opcoesBuscaTiposProduto);
+        return await this.tipoProdutoRepository.retornarColecaoEntidade(opcoesBuscaTiposProduto);
     }
 }

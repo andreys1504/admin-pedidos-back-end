@@ -1,18 +1,18 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { UsuarioAdminRepositorio } from "../../../../infra/data/repositories/usuario-admin.repositorio";
+import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
 import { UsuarioAdmin } from "../../../entities";
 import { AlteracaoSenhaRequest } from "./alteracao-senha.request";
 
 export class AlteracaoSenhaAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly usuarioAdminRepositorio = new UsuarioAdminRepositorio();
+    private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async executar(model: AlteracaoSenhaRequest) {
+    async handle(model: AlteracaoSenhaRequest) {
         model = this.validarAlteracaoSenha(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         let opcoesBuscaUsuario: any = {};
         opcoesBuscaUsuario.filtro = {
@@ -20,14 +20,14 @@ export class AlteracaoSenhaAppService extends AppService {
             senha: UsuarioAdmin.gerarSenha(model.senhaAtual)
         };
 
-        const usuarioEdicao = await this.usuarioAdminRepositorio.retornarEntidade(opcoesBuscaUsuario);
+        const usuarioEdicao = await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaUsuario);
         if (!usuarioEdicao)
-            return this.retornoErro([{ mensagem: 'SENHA ATUAL inválida' }]);
+            return this.returnNotifications([{ mensagem: 'SENHA ATUAL inválida' }]);
 
         usuarioEdicao.alterarSenha(model.confirmacaoNovaSenha);
-        await this.usuarioAdminRepositorio.salvarEntidade(usuarioEdicao);
+        await this.usuarioAdminRepository.salvarEntidade(usuarioEdicao);
 
-        return this.retornoSucesso({ mensagem: 'Senha alterada com sucesso' });
+        return this.returnSuccess({ mensagem: 'Senha alterada com sucesso' });
     }
 
     private validarAlteracaoSenha(dadosAlteracaoSenha: AlteracaoSenhaRequest) {

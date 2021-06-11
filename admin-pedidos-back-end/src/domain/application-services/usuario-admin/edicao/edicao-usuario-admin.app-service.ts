@@ -1,26 +1,26 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { PermissaoAcessoRepositorio } from "../../../../infra/data/repositories/permissao-acesso.repositorio";
-import { UsuarioAdminRepositorio } from "../../../../infra/data/repositories/usuario-admin.repositorio";
+import { PermissaoAcessoRepository } from "../../../../infra/data/repositories/permissao-acesso.repository";
+import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
 import { PermissaoAcesso } from "../../../entities";
 import { EdicaoUsuarioAdminRequest } from "./edicao-usuario-admin.request";
 
 export class EdicaoUsuarioAdminAppService extends AppService {
-    private readonly permissaoAcessoRepositorio = new PermissaoAcessoRepositorio();
+    private readonly permissaoAcessoRepository = new PermissaoAcessoRepository();
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly usuarioAdminRepositorio = new UsuarioAdminRepositorio();
+    private readonly usuarioAdminRepository = new UsuarioAdminRepository();
 
-    async executar(model: EdicaoUsuarioAdminRequest) {
+    async handle(model: EdicaoUsuarioAdminRequest) {
         const dadosValidados = this.validarEdicao(model);
 
         const senhaEditada = dadosValidados.senhaEditada;
         const dadosEdicao = dadosValidados;
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         const dadosUsuarioAtual =
-            await this.usuarioAdminRepositorio.retornarEntidade({ filtro: { id: dadosEdicao.usuario.idUsuario } } as any);
+            await this.usuarioAdminRepository.retornarEntidade({ filtro: { id: dadosEdicao.usuario.idUsuario } } as any);
 
         if (!dadosUsuarioAtual)
             throw new Error("usuário inexistente");
@@ -28,8 +28,8 @@ export class EdicaoUsuarioAdminAppService extends AppService {
         if (dadosUsuarioAtual.nomeUsuario !== dadosEdicao.usuario.nomeUsuario) {
             const opcoesBuscaPorNomeUsuario: any = {};
             opcoesBuscaPorNomeUsuario.filtro = { nomeUsuario: dadosEdicao.usuario.nomeUsuario };
-            if ((await this.usuarioAdminRepositorio.retornarEntidade(opcoesBuscaPorNomeUsuario)) != null)
-                return this.retornoErro([{ mensagem: 'NOME DE USUÁRIO já existente no sistema' }]);
+            if ((await this.usuarioAdminRepository.retornarEntidade(opcoesBuscaPorNomeUsuario)) != null)
+                return this.returnNotifications([{ mensagem: 'NOME DE USUÁRIO já existente no sistema' }]);
         }
 
         let permissoesAcesso = new Array<PermissaoAcesso>();
@@ -37,7 +37,7 @@ export class EdicaoUsuarioAdminAppService extends AppService {
             for (let i = 0; i < dadosEdicao.usuario.permissoes.length; i++) {
                 const opcoesBusca: any = {};
                 opcoesBusca.filtro = { chave: dadosEdicao.usuario.permissoes[i] };
-                const permissaoAcesso = await this.permissaoAcessoRepositorio.retornarEntidade(opcoesBusca);
+                const permissaoAcesso = await this.permissaoAcessoRepository.retornarEntidade(opcoesBusca);
                 if (!permissaoAcesso)
                     throw new Error('Permissão inexistente');
 
@@ -53,10 +53,10 @@ export class EdicaoUsuarioAdminAppService extends AppService {
             permissoesAcesso: permissoesAcesso
         });
 
-        await this.usuarioAdminRepositorio.salvarEntidade(dadosUsuarioAtual);
+        await this.usuarioAdminRepository.salvarEntidade(dadosUsuarioAtual);
         dadosUsuarioAtual.senha = "";
 
-        return this.retornoSucesso(dadosUsuarioAtual);
+        return this.returnSuccess(dadosUsuarioAtual);
     }
 
     private validarEdicao(dadosEdicao: EdicaoUsuarioAdminRequest) {

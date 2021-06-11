@@ -1,13 +1,13 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { TipoPedidoRepositorio } from "../../../../infra/data/repositories/tipo-pedido.repositorio";
+import { TipoPedidoRepository } from "../../../../infra/data/repositories/tipo-pedido.repository";
 import { TipoPedido } from "../../../entities";
 
 export class CadastroTipoPedidoAppService extends AppService {
-    private readonly tipoPedidoRepositorio = new TipoPedidoRepositorio();
+    private readonly tipoPedidoRepository = new TipoPedidoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: {
+    async handle(model: {
         id: number;
         descricao: string;
         ativo: boolean;
@@ -15,19 +15,19 @@ export class CadastroTipoPedidoAppService extends AppService {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido())
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
         
         const opcoesBuscaPorId: any = {};
         opcoesBuscaPorId.camposRetorno = ['id'];
         opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.tipoPedidoRepositorio.retornarEntidade(opcoesBuscaPorId))
-            return this.retornoErro([{ mensagem: 'ID já existente no sistema' }]);
+        if (await this.tipoPedidoRepository.retornarEntidade(opcoesBuscaPorId))
+            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
         
         const opcoesBuscaPorDescricao: any = {};
         opcoesBuscaPorDescricao.camposRetorno = ['id'];
         opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao };
-        if (await this.tipoPedidoRepositorio.retornarEntidade(opcoesBuscaPorDescricao))
-            return this.retornoErro([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
+        if (await this.tipoPedidoRepository.retornarEntidade(opcoesBuscaPorDescricao))
+            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
         
         const tipoPedido = new TipoPedido();
         tipoPedido.novoTipoPedido({
@@ -35,9 +35,9 @@ export class CadastroTipoPedidoAppService extends AppService {
             descricao: dadosCadastro.descricao,
             ativo: dadosCadastro.ativo
         })
-        await this.tipoPedidoRepositorio.salvarEntidade(tipoPedido);
+        await this.tipoPedidoRepository.salvarEntidade(tipoPedido);
 
-        return this.retornoSucesso(tipoPedido);
+        return this.returnSuccess(tipoPedido);
     }
 
     private validarCadastro(dadosCadastro: {

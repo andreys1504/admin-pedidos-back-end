@@ -1,14 +1,14 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { TipoPagamentoRepositorio } from "../../../../infra/data/repositories/tipo-pagamento-pedido.repositorio";
+import { TipoPagamentoRepository } from "../../../../infra/data/repositories/tipo-pagamento-pedido.repository";
 
 export class TiposPagamentoAppService extends AppService {
-    private readonly tipoPagamentoRepositorio = new TipoPagamentoRepositorio();
+    private readonly tipoPagamentoRepository = new TipoPagamentoRepository();
 
-    async executar() {
+    async handle() {
         const opcoesBusca: any = { camposRetorno: ['id', 'descricao', 'ativo'] };
         opcoesBusca.ordenacao = { descricao: 'ASC' };
-        const tiposPagamento = await this.tipoPagamentoRepositorio.retornarColecaoEntidade(opcoesBusca);
+        const tiposPagamento = await this.tipoPagamentoRepository.retornarColecaoEntidade(opcoesBusca);
         
-        return this.retornoSucesso(tiposPagamento);
+        return this.returnSuccess(tiposPagamento);
     }
 }

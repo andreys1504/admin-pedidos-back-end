@@ -1,23 +1,23 @@
-import { EdicaoViewModelAppService } from "./edicao-cliente.request";
+import { EdicaoClienteRequest } from "./edicao-cliente.request";
 import { ClientesParaEdicaoDadosAppService } from "../clientes-para-edicao-dados/clientes-para-edicao-dados.app-service";
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { extrairNumerosTexto, ValidacaoDados } from "../../../../core/helpers";
-import { ClienteRepositorio } from "../../../../infra/data/repositories/cliente.repositorio";
+import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
 
 export class EdicaoClienteAppService extends AppService {
     private readonly validacaoDados = new ValidacaoDados();
-    private readonly clienteRepositorio = new ClienteRepositorio();
-    private readonly clientesParaEdicaoDadosServicoApp = new ClientesParaEdicaoDadosAppService();
+    private readonly clienteRepository = new ClienteRepository();
+    private readonly clientesParaEdicaoDadosAppService = new ClientesParaEdicaoDadosAppService();
 
-    async executar(model: EdicaoViewModelAppService) {
+    async handle(model: EdicaoClienteRequest) {
         const dadosEdicao = this.validarDadosEdicao(model);
 
         if (!this.validacaoDados.valido() || !dadosEdicao.idCliente)
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
 
         const opcoesBuscaClienteEdicao: any = {};
         opcoesBuscaClienteEdicao.filtro = { id: dadosEdicao.idCliente };
-        const clienteEdicao = await this.clienteRepositorio.retornarEntidade(opcoesBuscaClienteEdicao);
+        const clienteEdicao = await this.clienteRepository.retornarEntidade(opcoesBuscaClienteEdicao);
         if (!clienteEdicao)
             throw new Error('CLIENTE inválido');
 
@@ -35,12 +35,12 @@ export class EdicaoClienteAppService extends AppService {
             medidasCliente: dadosEdicao.medidasCliente
         });
 
-        await this.clienteRepositorio.salvarEntidade(clienteEdicao);
-        const clienteRetorno = await this.clientesParaEdicaoDadosServicoApp.executar({ nomeCpfCnpj: clienteEdicao.cpfCnpj });
-        return this.retornoSucesso(clienteRetorno.dados[0]);
+        await this.clienteRepository.salvarEntidade(clienteEdicao);
+        const clienteRetorno = await this.clientesParaEdicaoDadosAppService.handle({ nomeCpfCnpj: clienteEdicao.cpfCnpj });
+        return this.returnSuccess(clienteRetorno.data[0]);
     }
 
-    private validarDadosEdicao(dadosEdicao: EdicaoViewModelAppService) {
+    private validarDadosEdicao(dadosEdicao: EdicaoClienteRequest) {
         this.validacaoDados.obrigatorio(dadosEdicao.nome, 'NOME obrigatório');
         this.validacaoDados.tamanhoMinimo(dadosEdicao.nome, 2, 'NOME inválido');
         this.validacaoDados.tamanhoMaximo(dadosEdicao.nome, 45, 'NOME inválido');

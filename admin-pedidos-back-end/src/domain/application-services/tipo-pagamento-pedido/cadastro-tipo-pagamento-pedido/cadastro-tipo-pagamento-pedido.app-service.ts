@@ -1,13 +1,13 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
 import { ValidacaoDados } from "../../../../core/helpers";
-import { TipoPagamentoRepositorio } from "../../../../infra/data/repositories/tipo-pagamento-pedido.repositorio";
+import { TipoPagamentoRepository } from "../../../../infra/data/repositories/tipo-pagamento-pedido.repository";
 import { TipoPagamentoPedido } from "../../../entities";
 
 export class CadastroTipoPagamentoPedidoAppService extends AppService {
-    private readonly tipoPagamentoRepositorio = new TipoPagamentoRepositorio();
+    private readonly tipoPagamentoRepository = new TipoPagamentoRepository();
     private readonly validacaoDados = new ValidacaoDados();
 
-    async executar(model: {
+    async handle(model: {
         id: number;
         descricao: string;
         ativo: boolean;
@@ -15,19 +15,19 @@ export class CadastroTipoPagamentoPedidoAppService extends AppService {
         const dadosCadastro = this.validarCadastro(model);
 
         if (!this.validacaoDados.valido()) 
-            return this.retornoErro(this.validacaoDados.recuperarErros());
+            return this.returnNotifications(this.validacaoDados.recuperarErros());
         
         const opcoesBuscaPorId: any = {};
         opcoesBuscaPorId.camposRetorno = ['id'];
         opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.tipoPagamentoRepositorio.retornarEntidade(opcoesBuscaPorId))
-            return this.retornoErro([{ mensagem: 'ID já existente no sistema' }]);
+        if (await this.tipoPagamentoRepository.retornarEntidade(opcoesBuscaPorId))
+            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
         
         const opcoesBuscaPorDescricao: any = {};
         opcoesBuscaPorDescricao.camposRetorno = ['id'];
         opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao };
-        if (await this.tipoPagamentoRepositorio.retornarEntidade(opcoesBuscaPorDescricao))
-            return this.retornoErro([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
+        if (await this.tipoPagamentoRepository.retornarEntidade(opcoesBuscaPorDescricao))
+            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
         
         const tipoPagamento = new TipoPagamentoPedido();
         tipoPagamento.novoTipoPagamento({
@@ -35,9 +35,9 @@ export class CadastroTipoPagamentoPedidoAppService extends AppService {
             descricao: dadosCadastro.descricao,
             ativo: dadosCadastro.ativo
         })
-        await this.tipoPagamentoRepositorio.salvarEntidade(tipoPagamento);
+        await this.tipoPagamentoRepository.salvarEntidade(tipoPagamento);
 
-        return this.retornoSucesso(tipoPagamento);
+        return this.returnSuccess(tipoPagamento);
     }
 
     private validarCadastro(dadosCadastro: {
