@@ -30,7 +30,7 @@ os arquivos yml são um exemplo para realizar a publicação da Api em um ambien
 
 - controllers
 
-recuperarValorBoleanoRequisicao
+para recuperar volores boleanos utilizar: getBooleanValueRequest.
 
 - entidades
 
@@ -46,11 +46,12 @@ campos que mapeiam colunas 'date' devem ser definidas como 'string', exceto as p
 
 - disparo de excessões
 
-'throw new Error()', deve ser usado em casos onde uma operação não pode ser realizada pelo consumidor:
+'throw new DomainException('...')', deve ser usado em casos onde uma operação indevida estiver sendo realizada:
     desativação de seu próprio cadastro; 
-    usuário a ser editado não consta no sistema, etc.
+    usuário a ser editado não consta no sistema; 
+    etc.
 
 
 - repositórios
 
-não inserir string vazias e sim 'null'
+não inserir string vazias e sim 'null'.
