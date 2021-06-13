@@ -1,27 +1,27 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 
-import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { Entity as EntityDomain } from "../../core/domain/entities/entity";
-import { PedidoDadosEntrega } from "./pedido-dados-entrega";
+import { DatabaseTables } from '../../core/infra/data/database-tables';
+import { Entity as EntityDomain } from '../../core/domain/entities/entity';
+import { PedidoDadosEntrega } from './pedido-dados-entrega';
 
 @Entity(DatabaseTables.TRANSPORTADORA_FRETE)
 export class TransportadoraFrete extends EntityDomain {
-    @PrimaryColumn({ name: "id", type: 'integer' })
+    @PrimaryColumn({ name: 'id', type: 'integer' })
     id: number;
 
-    @Column({ name: "descricao", length: 75, type: 'character varying' })
+    @Column({ name: 'descricao', length: 75, type: 'character varying' })
     descricao: string;
 
-    @Column({ name: "ativo", type: 'boolean' })
+    @Column({ name: 'ativo', type: 'boolean' })
     ativo: boolean;
 
     @OneToMany(type => PedidoDadosEntrega, pedidoDadosEntrega => pedidoDadosEntrega.transportadoraFrete)
     pedidosDadosEntrega: PedidoDadosEntrega[];
 
-    @Column({ name: "dataCriacao", type: 'timestamp' })
+    @Column({ name: 'dataCriacao', type: 'timestamp' })
     dataCriacao: Date;
 
-    @Column({ name: "dataAtualizacao", type: 'timestamp' })
+    @Column({ name: 'dataAtualizacao', type: 'timestamp' })
     dataAtualizacao: Date;
 
     novaTransportadora(transportadora: {

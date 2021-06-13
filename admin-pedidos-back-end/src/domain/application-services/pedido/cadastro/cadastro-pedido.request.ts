@@ -11,7 +11,7 @@ export class CadastroPedidoRequest extends RequestAppService {
       idClienteVinculadoPedido: number;
       itensPedido: ItemPedidoCadastroModel[];
       dataPrevisaoEntrega: string | null;
-      tamanhoItensPedido: string | null;
+      observacoes: string | null;
       dataFinalizacaoPedido: string | null;
       idUsuarioResponsavelPedido: number | null;
       idUsuarioRegistroPedido: number;
@@ -22,6 +22,13 @@ export class CadastroPedidoRequest extends RequestAppService {
 
   validate(): boolean {
     const flunt = new Flunt();
+
+    flunt.hasMinLen(
+      this.requestModel.idTipoPedido,
+      1,
+      "idTipoPedido",
+      "Informe TIPO DE PEDIDO"
+    );
 
     if (this.requestModel.dataEmissaoPedido) {
       this.requestModel.dataEmissaoPedido =
@@ -40,6 +47,10 @@ export class CadastroPedidoRequest extends RequestAppService {
       "Informe a SITUAÇÃO EXTERNA DO PEDIDO"
     );
 
+    if (!this.requestModel.idTipoPagamento) {
+      this.requestModel.idTipoPagamento = null;
+    }
+
     flunt.hasMinLen(
       this.requestModel.idClienteVinculadoPedido,
       1,
@@ -47,16 +58,9 @@ export class CadastroPedidoRequest extends RequestAppService {
       "Informe um CLIENTE"
     );
 
-    flunt.hasMinLen(
-      this.requestModel.idTipoPedido,
-      1,
-      "idTipoPedido",
-      "Informe TIPO DE PEDIDO"
-    );
-
     const mensagemDadosInvalidosItensPedido =
       "Informe todos os dados dos itens do pedido";
-    let erroDadosItensPedidos = false;
+    let erroItensPedidos = false;
 
     if (
       flunt.isRequiredCollection(
@@ -73,7 +77,7 @@ export class CadastroPedidoRequest extends RequestAppService {
           !flunt.isRequired(item.idSituacaoInternaItemPedido) ||
           !flunt.isRequired(item.valorUnitario)
         ) {
-          erroDadosItensPedidos = true;
+          erroItensPedidos = true;
         }
 
         if (
@@ -84,7 +88,7 @@ export class CadastroPedidoRequest extends RequestAppService {
             "VALOR PRODUTO obrigatório"
           )
         ) {
-          erroDadosItensPedidos = true;
+          erroItensPedidos = true;
         }
 
         if (!item.nomeFuncionarioResponsavel) {
@@ -92,13 +96,9 @@ export class CadastroPedidoRequest extends RequestAppService {
         }
       });
 
-      if (erroDadosItensPedidos) {
+      if (erroItensPedidos) {
         this.addNotification("itensPedido", mensagemDadosInvalidosItensPedido);
       }
-    }
-
-    if (!this.requestModel.idTipoPagamento) {
-      this.requestModel.idTipoPagamento = null;
     }
 
     if (!this.requestModel.dataPrevisaoEntrega) {
@@ -129,9 +129,16 @@ export class CadastroPedidoRequest extends RequestAppService {
       }
     }
 
-    if (!this.requestModel.tamanhoItensPedido) {
-      this.requestModel.tamanhoItensPedido = null;
+    if (this.requestModel.observacoes) {
+      this.requestModel.observacoes = this.requestModel.observacoes.trim();
     }
+    flunt.isBetween(
+      this.requestModel.observacoes,
+      5,
+      300,
+      "observacoes",
+      "Observações inválidas"
+    );
 
     if (!this.requestModel.idUsuarioResponsavelPedido) {
       this.requestModel.idUsuarioResponsavelPedido = null;

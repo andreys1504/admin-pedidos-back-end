@@ -1,7 +1,6 @@
 export interface EdicaoClienteRequestApi {
     id: number;
-    nome: string; 
-    nomeGuerra: string; 
+    nome: string;
     idTipoCliente: number;
     logradouro: string; 
     cep: string; 
@@ -9,6 +8,5 @@ export interface EdicaoClienteRequestApi {
     siglaUf: string;
     telefone: string;
     email: string;
-    tipoSanguineo: string;
-    medidasCliente: string;
+    observacoes: string;
 }

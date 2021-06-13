@@ -39,6 +39,7 @@ export class CadastroProdutoAppService extends AppService<Produto> {
       destaqueTelaPrincipal: request.requestModel.destaqueTelaPrincipal,
     });
     await this.produtoRepository.salvarAsync(produto);
+    
     return this.returnData(produto);
   }
 

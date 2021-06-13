@@ -1,8 +1,8 @@
-import { ApiAdminController } from "../../api-admin-controller";
-import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
-import { RouteContext } from "../../../configurations/routes/route-context";
-import { DesativacaoUsuarioAdminAppService } from "../../../../../domain/application-services/usuario-admin/desativacao/desativacao-usuario-admin.app-service";
-import { DesativacaoUsuarioAdminRequest } from "../../../../../domain/application-services/usuario-admin/desativacao/desativacao-usuario-admin.request";
+import { ApiAdminController } from '../../api-admin-controller';
+import { ResponseApiStatusCode } from '../../../configurations/response-api-status-code';
+import { RouteContext } from '../../../configurations/routes/route-context';
+import { DesativacaoUsuarioAdminAppService } from '../../../../../domain/application-services/usuario-admin/desativacao/desativacao-usuario-admin.app-service';
+import { DesativacaoUsuarioAdminRequest } from '../../../../../domain/application-services/usuario-admin/desativacao/desativacao-usuario-admin.request';
 
 export class DesativacaoUsuarioAdminController extends ApiAdminController {
     private readonly appService = new DesativacaoUsuarioAdminAppService();

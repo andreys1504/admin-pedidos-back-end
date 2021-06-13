@@ -1,9 +1,9 @@
-import { getManager, Connection } from "typeorm";
-import dotenv from "dotenv";
-dotenv.config({ path: "./ormconfig.test.env" });
-import { DatabaseTables } from "../../src/core/infra/data/database-tables";
-import { createConnection, ConnectionOptions } from "typeorm";
-import { databaseConnectionOptions } from "../../src/core/infra/data/database-connection-options";
+import { getManager, Connection } from 'typeorm';
+import dotenv from 'dotenv';
+dotenv.config({ path: './ormconfig.test.env' });
+import { DatabaseTables } from '../../src/core/infra/data/database-tables';
+import { createConnection, ConnectionOptions } from 'typeorm';
+import { databaseConnectionOptions } from '../../src/core/infra/data/database-connection-options';
 
 export const start = async () => {
   const tables = [
@@ -38,7 +38,7 @@ const clearDatabaseTables = async (settings: {
         if (!settings.tables.find((x) => entity.name == x)) return;
 
       const repository = getManager().getRepository(entity.name);
-      return repository.query(`DELETE FROM "${entity.tableName}";`);
+      return repository.query(`DELETE FROM '${entity.tableName}';`);
     })
   );
 };

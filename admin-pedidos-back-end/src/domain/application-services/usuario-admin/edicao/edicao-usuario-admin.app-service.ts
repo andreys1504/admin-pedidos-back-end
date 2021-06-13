@@ -1,8 +1,9 @@
-import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { PermissaoAcessoRepository } from "../../../../infra/data/repositories/permissao-acesso.repository";
-import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
-import { PermissaoAcesso, UsuarioAdmin } from "../../../entities";
-import { EdicaoUsuarioAdminRequest } from "./edicao-usuario-admin.request";
+import { AppService } from '../../../../core/domain/application-services/service/app-service';
+import { DomainException } from '../../../../core/domain/exceptions/domain.exception';
+import { PermissaoAcessoRepository } from '../../../../infra/data/repositories/permissao-acesso.repository';
+import { UsuarioAdminRepository } from '../../../../infra/data/repositories/usuario-admin.repository';
+import { PermissaoAcesso, UsuarioAdmin } from '../../../entities';
+import { EdicaoUsuarioAdminRequest } from './edicao-usuario-admin.request';
 
 export class EdicaoUsuarioAdminAppService extends AppService<UsuarioAdmin> {
   private readonly permissaoAcessoRepository = new PermissaoAcessoRepository();
@@ -22,7 +23,7 @@ export class EdicaoUsuarioAdminAppService extends AppService<UsuarioAdmin> {
       } as any);
 
     if (!dadosUsuarioAtual) {
-      throw new Error("usuário inexistente");
+      throw new DomainException('usuário inexistente');
     }
 
     if (dadosUsuarioAtual.nomeUsuario !== dadosEdicao.usuario.nomeUsuario) {
@@ -36,8 +37,8 @@ export class EdicaoUsuarioAdminAppService extends AppService<UsuarioAdmin> {
         )) != null
       ) {
         return this.returnNotification(
-          "nomeUsuario",
-          "NOME DE USUÁRIO já existente no sistema"
+          'nomeUsuario',
+          'NOME DE USUÁRIO já existente no sistema'
         );
       }
     }
@@ -53,7 +54,7 @@ export class EdicaoUsuarioAdminAppService extends AppService<UsuarioAdmin> {
         const permissaoAcesso =
           await this.permissaoAcessoRepository.entidadeAsync(opcoesBusca);
         if (!permissaoAcesso) {
-          throw new Error("Permissão inexistente");
+          throw new DomainException('Permissão inexistente');
         }
 
         permissoesAcesso.push(permissaoAcesso);
@@ -69,7 +70,7 @@ export class EdicaoUsuarioAdminAppService extends AppService<UsuarioAdmin> {
     });
 
     await this.usuarioAdminRepository.salvarAsync(dadosUsuarioAtual);
-    dadosUsuarioAtual.senha = "";
+    dadosUsuarioAtual.senha = '';
 
     return this.returnData(dadosUsuarioAtual);
   }

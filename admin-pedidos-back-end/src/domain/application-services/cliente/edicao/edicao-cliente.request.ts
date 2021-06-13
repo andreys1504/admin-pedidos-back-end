@@ -1,13 +1,13 @@
 import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 import { getNumbersText } from "../../../../core/helpers";
 import { Flunt } from "../../../../core/validations/flunt";
 
 export class EdicaoClienteRequest extends RequestAppService {
   constructor(
     public requestModel: {
-      id: number;
+      idCliente: number;
       nome: string;
-      nomeGuerra: string;
       idTipoCliente: number;
       logradouro: string;
       cep: string;
@@ -15,9 +15,7 @@ export class EdicaoClienteRequest extends RequestAppService {
       siglaUf: string;
       telefone: string;
       email: string;
-      tipoSanguineo: string;
-      medidasCliente: string;
-      idCliente: number;
+      observacoes: string;
     }
   ) {
     super();
@@ -27,7 +25,7 @@ export class EdicaoClienteRequest extends RequestAppService {
     const flunt = new Flunt();
 
     if (!this.requestModel.idCliente) {
-      throw new Error("Cliente inválido");
+      throw new DomainException("Cliente inválido");
     }
 
     if (this.requestModel.nome) {
@@ -36,22 +34,6 @@ export class EdicaoClienteRequest extends RequestAppService {
     flunt.isNotNullOrEmpty(this.requestModel.nome, "nome", "NOME obrigatório");
     flunt.hasMinLen(this.requestModel.nome, 2, "nome", "NOME inválido");
     flunt.hasMaxLen(this.requestModel.nome, 45, "nome", "NOME inválido");
-
-    if (this.requestModel.nomeGuerra) {
-      this.requestModel.nomeGuerra = this.requestModel.nomeGuerra.trim();
-    }
-    flunt.hasMinLen(
-      this.requestModel.nomeGuerra,
-      2,
-      "nomeGuerra",
-      "NOME DE GUERRA inválido"
-    );
-    flunt.hasMaxLen(
-      this.requestModel.nomeGuerra,
-      45,
-      "nomeGuerra",
-      "NOME DE GUERRA inválido"
-    );
 
     flunt.hasMinLen(
       this.requestModel.idTipoCliente,
@@ -82,19 +64,19 @@ export class EdicaoClienteRequest extends RequestAppService {
 
     if (this.requestModel.nomeCidade) {
       this.requestModel.nomeCidade = this.requestModel.nomeCidade.trim();
-      flunt.hasMinLen(
-        this.requestModel.nomeCidade,
-        2,
-        "nomeCidade",
-        "NOME CIDADE inválido"
-      );
-      flunt.hasMaxLen(
-        this.requestModel.nomeCidade,
-        150,
-        "nomeCidade",
-        "NOME CIDADE inválido"
-      );
     }
+    flunt.hasMinLen(
+      this.requestModel.nomeCidade,
+      2,
+      "nomeCidade",
+      "NOME CIDADE inválido"
+    );
+    flunt.hasMaxLen(
+      this.requestModel.nomeCidade,
+      150,
+      "nomeCidade",
+      "NOME CIDADE inválido"
+    );
 
     if (this.requestModel.siglaUf) {
       this.requestModel.siglaUf = this.requestModel.siglaUf.trim();
@@ -108,38 +90,20 @@ export class EdicaoClienteRequest extends RequestAppService {
 
     if (this.requestModel.telefone) {
       this.requestModel.telefone = this.requestModel.telefone.trim();
-      flunt.isPhone(
-        this.requestModel.telefone,
-        "telefone",
-        "TELEFONE inválido"
-      );
+      this.requestModel.telefone = getNumbersText(this.requestModel.telefone);
     }
+    flunt.isPhone(this.requestModel.telefone, "telefone", "TELEFONE inválido");
 
     if (this.requestModel.email) {
       this.requestModel.email = this.requestModel.email.trim();
-      flunt.isEmail(this.requestModel.email, "email", "E-MAIL inválido");
-      flunt.hasMaxLen(this.requestModel.email, 100, "email", "E-MAIL inválido");
     }
-
-    if (this.requestModel.tipoSanguineo) {
-      this.requestModel.tipoSanguineo = this.requestModel.tipoSanguineo.trim();
-      flunt.hasMaxLen(
-        this.requestModel.tipoSanguineo,
-        10,
-        "tipoSanguineo",
-        "corriga TIPO SANGUÍNEO"
-      );
-    }
+    flunt.isEmail(this.requestModel.email, "email", "E-MAIL inválido");
+    flunt.hasMaxLen(this.requestModel.email, 100, "email", "E-MAIL inválido");
 
     if (this.requestModel.cep) {
       this.requestModel.cep = getNumbersText(this.requestModel.cep);
     }
-
-    if (this.requestModel.telefone) {
-      this.requestModel.telefone = getNumbersText(
-        this.requestModel.telefone
-      );
-    }
+    flunt.isCep(this.requestModel.cep, "cep", "CEP inválido");
 
     this.addNotifications(flunt.notifications);
 

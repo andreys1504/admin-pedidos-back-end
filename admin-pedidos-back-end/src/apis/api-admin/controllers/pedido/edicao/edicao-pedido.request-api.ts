@@ -7,7 +7,7 @@ export interface EdicaoPedidoRequestApi {
     idClienteVinculadoPedido: number,
     itensPedido: ItemPedidoEdicao[],
     dataPrevisaoEntrega: string | null;
-    tamanhoItensPedido: string | null;
+    observacoes: string | null;
     dataFinalizacaoPedido: string | null;
     idUsuarioResponsavelPedido: number | null;
 }

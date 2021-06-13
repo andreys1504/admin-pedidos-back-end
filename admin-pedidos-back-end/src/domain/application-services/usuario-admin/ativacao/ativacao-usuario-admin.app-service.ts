@@ -1,6 +1,7 @@
-import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
-import { AtivacaoUsuarioAdminRequest } from "./ativacao-usuario-admin.request";
+import { AppService } from '../../../../core/domain/application-services/service/app-service';
+import { DomainException } from '../../../../core/domain/exceptions/domain.exception';
+import { UsuarioAdminRepository } from '../../../../infra/data/repositories/usuario-admin.repository';
+import { AtivacaoUsuarioAdminRequest } from './ativacao-usuario-admin.request';
 
 export class AtivacaoUsuarioAdminAppService extends AppService<any> {
   private readonly usuarioAdminRepository = new UsuarioAdminRepository();
@@ -16,7 +17,7 @@ export class AtivacaoUsuarioAdminAppService extends AppService<any> {
       opcoesBuscaPorId
     );
     if (!usuarioEdicao) {
-      throw new Error("operação inválida");
+      throw new DomainException('operação inválida');
     }
 
     usuarioEdicao.ativar();

@@ -75,9 +75,7 @@ export class PedidosParaTratamentoAppService extends AppService<any> {
       "itensPedido." + DatabaseTables.SITUACAO_INTERNA_ITEM_PEDIDO,
     ];
 
-    const pedidos = await this.pedidoRepository.entidadesAsync(
-      opcoesBusca
-    );
+    const pedidos = await this.pedidoRepository.entidadesAsync(opcoesBusca);
 
     return this.returnData(pedidos);
   }

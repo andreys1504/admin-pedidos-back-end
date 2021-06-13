@@ -1,6 +1,5 @@
 export interface CadastroClienteRequestApi {
     nome: string; 
-    nomeGuerra: string; 
     idTipoCliente: number;
     cpfCnpj: string; 
     logradouro: string; 
@@ -9,6 +8,5 @@ export interface CadastroClienteRequestApi {
     siglaUf: string;
     telefone: string;
     email: string;
-    tipoSanguineo: string;
-    medidasCliente: string;
+    observacoes: string;
 }

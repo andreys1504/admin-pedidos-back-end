@@ -1,12 +1,13 @@
-import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { PermissaoAcessoRepository } from "../../../../infra/data/repositories/permissao-acesso.repository";
-import { UsuarioAdminRepository } from "../../../../infra/data/repositories/usuario-admin.repository";
+import { AppService } from '../../../../core/domain/application-services/service/app-service';
+import { DomainException } from '../../../../core/domain/exceptions/domain.exception';
+import { PermissaoAcessoRepository } from '../../../../infra/data/repositories/permissao-acesso.repository';
+import { UsuarioAdminRepository } from '../../../../infra/data/repositories/usuario-admin.repository';
 import {
   gerarSenhaCodificada,
   PermissaoAcesso,
   UsuarioAdmin,
-} from "../../../entities";
-import { CadastroUsuarioAdminRequest } from "./cadastro-usuario-admin.request";
+} from '../../../entities';
+import { CadastroUsuarioAdminRequest } from './cadastro-usuario-admin.request';
 
 export class CadastroUsuarioAdminAppService extends AppService<UsuarioAdmin> {
   private readonly permissaoAcessoRepository = new PermissaoAcessoRepository();
@@ -23,8 +24,8 @@ export class CadastroUsuarioAdminAppService extends AppService<UsuarioAdmin> {
       )) === true
     ) {
       return this.returnNotification(
-        "nomeUsuario",
-        "NOME DE USUÁRIO já existente no sistema"
+        'nomeUsuario',
+        'NOME DE USUÁRIO já existente no sistema'
       );
     }
 
@@ -39,7 +40,7 @@ export class CadastroUsuarioAdminAppService extends AppService<UsuarioAdmin> {
         const permissaoAcesso =
           await this.permissaoAcessoRepository.entidadeAsync(opcoesBusca);
         if (!permissaoAcesso) {
-          throw new Error("Permissão inexistente");
+          throw new DomainException('Permissão inexistente');
         }
 
         permissoesAcesso.push(permissaoAcesso);

@@ -1,7 +1,7 @@
-import { ValidSqlParameter } from "../../../core/helpers";
-import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../repository";
-import { Cliente } from "../../../domain/entities";
+import { ValidSqlParameter } from '../../../core/helpers';
+import { DatabaseTables } from '../../../core/infra/data/database-tables';
+import { RepositoryBase } from '../repository';
+import { Cliente } from '../../../domain/entities';
 
 export class ClienteRepository extends RepositoryBase<Cliente> {
     constructor() {
@@ -32,11 +32,11 @@ export class ClienteRepository extends RepositoryBase<Cliente> {
                         : ' * '
                     }
                 FROM
-                    "${DatabaseTables.CLIENTE}" ${aliasTabela}
+                    '${DatabaseTables.CLIENTE}' ${aliasTabela}
                 WHERE
                     ${aliasTabela}.nome ILIKE '${like}'
                 ORDER BY
-                    ${aliasTabela}."dataAtualizacao" DESC
+                    ${aliasTabela}.'dataAtualizacao' DESC
             `;
 
         return await this.retornarDadosPorSqlAsync<Cliente>({ sql });

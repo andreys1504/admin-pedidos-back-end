@@ -4,6 +4,7 @@ import { AppService } from "../../../../core/domain/application-services/service
 import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
 import { Cliente } from "../../../entities";
 import { ClientesParaEdicaoDadosRequest } from "../clientes-para-edicao-dados/clientes-para-edicao-dados.request";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 
 export class EdicaoClienteAppService extends AppService<Cliente> {
   private readonly clienteRepository = new ClienteRepository();
@@ -23,7 +24,7 @@ export class EdicaoClienteAppService extends AppService<Cliente> {
       opcoesBuscaClienteEdicao
     );
     if (!clienteEdicao) {
-      throw new Error("CLIENTE inválido");
+      throw new DomainException("CLIENTE inválido");
     }
 
     clienteEdicao.editar({
@@ -32,12 +33,10 @@ export class EdicaoClienteAppService extends AppService<Cliente> {
       logradouro: dadosEdicao.logradouro,
       nome: dadosEdicao.nome,
       nomeCidade: dadosEdicao.nomeCidade,
-      nomeGuerra: dadosEdicao.nomeGuerra,
       siglaUf: dadosEdicao.siglaUf,
       telefone: dadosEdicao.telefone,
       idTipoCliente: dadosEdicao.idTipoCliente,
-      tipoSanguineo: dadosEdicao.tipoSanguineo,
-      medidasCliente: dadosEdicao.medidasCliente,
+      observacoes: dadosEdicao.observacoes,
     });
 
     await this.clienteRepository.salvarAsync(clienteEdicao);

@@ -1,4 +1,5 @@
 import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 import { Flunt } from "../../../../core/validations/flunt";
 
 export class EdicaoPedidoRequest extends RequestAppService {
@@ -12,7 +13,7 @@ export class EdicaoPedidoRequest extends RequestAppService {
       idClienteVinculadoPedido: number;
       itensPedido: ItemPedidoEdicaoModel[];
       dataPrevisaoEntrega: string | null;
-      tamanhoItensPedido: string | null;
+      observacoes: string | null;
       dataFinalizacaoPedido: string | null;
       idUsuarioResponsavelPedido: number | null;
     }
@@ -23,8 +24,9 @@ export class EdicaoPedidoRequest extends RequestAppService {
   validate(): boolean {
     const flunt = new Flunt();
 
-    if (!this.requestModel.idPedido || this.requestModel.idPedido === 0)
-      throw new Error("PEDIDO inválido");
+    if (!this.requestModel.idPedido) {
+      throw new DomainException("PEDIDO inválido");
+    }
 
     if (this.requestModel.dataEmissaoPedido) {
       this.requestModel.dataEmissaoPedido =
@@ -59,7 +61,8 @@ export class EdicaoPedidoRequest extends RequestAppService {
 
     const mensagemDadosInvalidosItensPedido =
       "Informe todos os dados dos itens do pedido";
-    let erroDadosItensPedidos = false;
+    let erroItensPedidos = false;
+
     if (
       flunt.isRequiredCollection(
         this.requestModel.itensPedido,
@@ -75,7 +78,7 @@ export class EdicaoPedidoRequest extends RequestAppService {
           !flunt.isRequired(item.idSituacaoInternaItemPedido) ||
           !flunt.isRequired(item.valorUnitario)
         ) {
-          erroDadosItensPedidos = true;
+          erroItensPedidos = true;
         }
 
         if (
@@ -86,7 +89,7 @@ export class EdicaoPedidoRequest extends RequestAppService {
             "VALOR PRODUTO obrigatório"
           )
         ) {
-          erroDadosItensPedidos = true;
+          erroItensPedidos = true;
         }
 
         if (!item.nomeFuncionarioResponsavel) {
@@ -94,7 +97,7 @@ export class EdicaoPedidoRequest extends RequestAppService {
         }
       });
 
-      if (erroDadosItensPedidos) {
+      if (erroItensPedidos) {
         this.addNotification("itensPedido", mensagemDadosInvalidosItensPedido);
       }
     }
@@ -131,8 +134,8 @@ export class EdicaoPedidoRequest extends RequestAppService {
       }
     }
 
-    if (!this.requestModel.tamanhoItensPedido) {
-      this.requestModel.tamanhoItensPedido = null;
+    if (this.requestModel.observacoes) {
+      this.requestModel.observacoes = this.requestModel.observacoes.trim();
     }
 
     if (!this.requestModel.idUsuarioResponsavelPedido) {

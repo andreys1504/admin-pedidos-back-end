@@ -27,7 +27,6 @@ export class CadastroClienteAppService extends AppService<Cliente> {
     const novoCliente = new Cliente();
     novoCliente.novoCliente({
       nome: dadosCadastro.nome,
-      nomeGuerra: dadosCadastro.nomeGuerra,
       idTipoCliente: dadosCadastro.idTipoCliente,
       cpfCnpj: dadosCadastro.cpfCnpj,
       logradouro: dadosCadastro.logradouro,
@@ -36,8 +35,7 @@ export class CadastroClienteAppService extends AppService<Cliente> {
       siglaUf: dadosCadastro.siglaUf,
       telefone: dadosCadastro.telefone,
       email: dadosCadastro.email,
-      tipoSanguineo: dadosCadastro.tipoSanguineo,
-      medidasCliente: dadosCadastro.medidasCliente,
+      observacoes: dadosCadastro.observacoes,
     });
     await this.clienteRepository.salvarAsync(novoCliente);
 

@@ -6,7 +6,7 @@ export interface CadastroPedidoRequestApi {
     idClienteVinculadoPedido: number,
     itensPedido: ItemPedidoCadastro[],
     dataPrevisaoEntrega: string | null;
-    tamanhoItensPedido: string | null;
+    observacoes: string | null;
     dataFinalizacaoPedido: string | null;
     idUsuarioResponsavelPedido: number | null;
 }

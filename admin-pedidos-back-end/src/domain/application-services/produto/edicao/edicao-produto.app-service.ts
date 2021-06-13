@@ -7,6 +7,7 @@ import { ProdutoImagens } from "../../../entities/produto-imagens";
 import { envioImagensProdutosStorageServico } from "../../../../infra/service/storage-files-service";
 import { Produto } from "../../../entities";
 import { ProdutosParaEdicaoRequest } from "../produtos-para-edicao/produtos-para-edicao.request";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 
 export class EdicaoProdutoAppService extends AppService<Produto> {
   private readonly produtoRepository = new ProdutoRepository();
@@ -22,7 +23,7 @@ export class EdicaoProdutoAppService extends AppService<Produto> {
       request.requestModel.idProduto
     );
     if (!produtoEdicao) {
-      throw new Error("produto inválido");
+      throw new DomainException("produto inválido");
     }
 
     if (produtoEdicao.descricao != request.requestModel.descricao) {

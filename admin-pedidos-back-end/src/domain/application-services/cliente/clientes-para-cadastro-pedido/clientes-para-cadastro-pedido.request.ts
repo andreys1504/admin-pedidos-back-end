@@ -32,9 +32,7 @@ export class ClientesParaCadastroPedidoRequest extends RequestAppService {
         flunt.isCnpj(cpfCnpj, "cpfCnpj", "CPF ou CNPJ inválidos");
       }
     } else {
-      if (!Cliente.nomeClienteValido(this.requestModel.nomeCpfCnpj)) {
-        this.addNotification(this.requestModel.nomeCpfCnpj, "NOME inválido");
-      }
+      flunt.isBetween(this.requestModel.nomeCpfCnpj, 2, 45, 'nomeCpfCnpj', "NOME inválido");
     }
 
     this.addNotifications(flunt.notifications);

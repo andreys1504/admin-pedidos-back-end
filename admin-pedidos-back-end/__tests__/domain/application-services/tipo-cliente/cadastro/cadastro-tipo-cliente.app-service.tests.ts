@@ -1,10 +1,10 @@
-import { CadastroTipoClienteAppService } from "../../../../../src/domain/application-services/tipo-cliente/cadastro/cadastro-tipo-cliente.app-service";
-import { TipoClienteRepository } from "../../../../../src/infra/data/repositories/tipo-cliente.repository";
-import { CadastroTipoClienteRequest } from "../../../../../src/domain/application-services/tipo-cliente/cadastro/cadastro-tipo-cliente.request";
-import { TipoCliente } from "../../../../../src/domain/entities/tipo-cliente";
-import { start, close } from "../../../../helpers/base-tests";
+import { CadastroTipoClienteAppService } from '../../../../../src/domain/application-services/tipo-cliente/cadastro/cadastro-tipo-cliente.app-service';
+import { TipoClienteRepository } from '../../../../../src/infra/data/repositories/tipo-cliente.repository';
+import { CadastroTipoClienteRequest } from '../../../../../src/domain/application-services/tipo-cliente/cadastro/cadastro-tipo-cliente.request';
+import { TipoCliente } from '../../../../../src/domain/entities/tipo-cliente';
+import { start, close } from '../../../../helpers/base-tests';
 
-describe("CadastroTipoClienteAppService", () => {
+describe('CadastroTipoClienteAppService', () => {
     
   beforeAll(async () => {
     await start();
@@ -14,7 +14,7 @@ describe("CadastroTipoClienteAppService", () => {
     await close();
   });
 
-  it("retornar notificação quando Id informado for menor que '1'", async () => {
+  it('retornar notificação quando Id informado for menor que '1'', async () => {
     //arrange
     const appService = new CadastroTipoClienteAppService(
       new TipoClienteRepository()
@@ -24,7 +24,7 @@ describe("CadastroTipoClienteAppService", () => {
     const responseAppService = await appService.handleAsync(
       new CadastroTipoClienteRequest({
         id: 0,
-        descricao: "Bombeiro",
+        descricao: 'Bombeiro',
         ativo: true,
       })
     );
@@ -35,7 +35,7 @@ describe("CadastroTipoClienteAppService", () => {
     expect(responseAppService.success).toBe(false);
   });
 
-  it("retornar notificação quando Id informado for maior que 999", async () => {
+  it('retornar notificação quando Id informado for maior que 999', async () => {
     //arrange
     const appService = new CadastroTipoClienteAppService(
       new TipoClienteRepository()
@@ -45,7 +45,7 @@ describe("CadastroTipoClienteAppService", () => {
     const responseAppService = await appService.handleAsync(
       new CadastroTipoClienteRequest({
         id: 1000,
-        descricao: "Bombeiro",
+        descricao: 'Bombeiro',
         ativo: true,
       })
     );
@@ -56,7 +56,7 @@ describe("CadastroTipoClienteAppService", () => {
     expect(responseAppService.success).toBe(false);
   });
 
-  it("retornar notificação quando Descrição não for informada", async () => {
+  it('retornar notificação quando Descrição não for informada', async () => {
     //arrange
     const appService = new CadastroTipoClienteAppService(
       new TipoClienteRepository()
@@ -66,7 +66,7 @@ describe("CadastroTipoClienteAppService", () => {
     const responseAppService = await appService.handleAsync(
       new CadastroTipoClienteRequest({
         id: 1,
-        descricao: "",
+        descricao: '',
         ativo: true,
       })
     );
@@ -77,7 +77,7 @@ describe("CadastroTipoClienteAppService", () => {
     expect(responseAppService.success).toBe(false);
   });
 
-  it("retornar notificação quando Descrição informada tiver menos de 2 caracteres", async () => {
+  it('retornar notificação quando Descrição informada tiver menos de 2 caracteres', async () => {
     //arrange
     const appService = new CadastroTipoClienteAppService(
       new TipoClienteRepository()
@@ -87,7 +87,7 @@ describe("CadastroTipoClienteAppService", () => {
     const responseAppService = await appService.handleAsync(
       new CadastroTipoClienteRequest({
         id: 1,
-        descricao: "B",
+        descricao: 'B',
         ativo: true,
       })
     );
@@ -98,7 +98,7 @@ describe("CadastroTipoClienteAppService", () => {
     expect(responseAppService.success).toBe(false);
   });
 
-  it("retornar notificação quando Descrição informada tiver mais de 45 caracteres", async () => {
+  it('retornar notificação quando Descrição informada tiver mais de 45 caracteres', async () => {
     //arrange
     const appService = new CadastroTipoClienteAppService(
       new TipoClienteRepository()
@@ -108,7 +108,7 @@ describe("CadastroTipoClienteAppService", () => {
     const responseAppService = await appService.handleAsync(
       new CadastroTipoClienteRequest({
         id: 1,
-        descricao: "Bombeiros exército aeronáutica polícia militar",
+        descricao: 'Bombeiros exército aeronáutica polícia militar',
         ativo: true,
       })
     );
@@ -119,12 +119,12 @@ describe("CadastroTipoClienteAppService", () => {
     expect(responseAppService.success).toBe(false);
   });
 
-  it("retornar notificação quando Id informado já existir no repositório", async () => {
+  it('retornar notificação quando Id informado já existir no repositório', async () => {
     //arrange
     const tipoClienteBombeiro = new TipoCliente();
     tipoClienteBombeiro.novoTipoCliente({
       id: 2,
-      descricao: "Bombeiro",
+      descricao: 'Bombeiro',
       ativo: true,
     });
 

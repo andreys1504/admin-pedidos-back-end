@@ -5,45 +5,45 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
-} from "typeorm";
+} from 'typeorm';
 
-import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { PermissaoAcesso } from "./permissao-acesso";
-import { Pedido } from "./pedido";
-import { Entity as EntityDomain } from "../../core/domain/entities/entity";
-import md5 from "md5";
-import { GlobalSettings } from "../../core/configurations/global-settings";
+import { DatabaseTables } from '../../core/infra/data/database-tables';
+import { PermissaoAcesso } from './permissao-acesso';
+import { Pedido } from './pedido';
+import { Entity as EntityDomain } from '../../core/domain/entities/entity';
+import md5 from 'md5';
+import { GlobalSettings } from '../../core/configurations/global-settings';
 
 @Entity(DatabaseTables.USUARIO_ADMIN)
 export class UsuarioAdmin extends EntityDomain {
-  @PrimaryGeneratedColumn({ name: "id", type: "integer" })
+  @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  @Column({ name: "nomeUsuario", length: 20, type: "character varying" })
+  @Column({ name: 'nomeUsuario', length: 20, type: 'character varying' })
   nomeUsuario: string;
 
-  @Column({ name: "senha", length: 20, type: "character varying" })
+  @Column({ name: 'senha', length: 20, type: 'character varying' })
   senha: string;
 
-  @Column({ name: "nome", length: 45, type: "character varying" })
+  @Column({ name: 'nome', length: 45, type: 'character varying' })
   nome: string;
 
-  @Column({ name: "necessarioAlteracaoSenha", type: "boolean" })
+  @Column({ name: 'necessarioAlteracaoSenha', type: 'boolean' })
   necessarioAlteracaoSenha: boolean;
 
-  @Column({ name: "ativo", type: "boolean" })
+  @Column({ name: 'ativo', type: 'boolean' })
   ativo: boolean;
 
   @ManyToMany((type) => PermissaoAcesso)
   @JoinTable({
     name: DatabaseTables.USUARIO_PERMISSOES,
     joinColumn: {
-      name: DatabaseTables.USUARIO_ADMIN + "Id",
-      referencedColumnName: "id",
+      name: DatabaseTables.USUARIO_ADMIN + 'Id',
+      referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: DatabaseTables.PERMISSAO_ACESSO + "Id",
-      referencedColumnName: "id",
+      name: DatabaseTables.PERMISSAO_ACESSO + 'Id',
+      referencedColumnName: 'id',
     },
   })
   permissoesAcesso: PermissaoAcesso[];
@@ -54,10 +54,10 @@ export class UsuarioAdmin extends EntityDomain {
   @OneToMany((type) => Pedido, (pedido) => pedido.usuarioResponsavelPedido)
   pedidosResponsabilidade: Pedido[];
 
-  @Column({ name: "dataCriacao", type: "timestamp" })
+  @Column({ name: 'dataCriacao', type: 'timestamp' })
   dataCriacao: Date;
 
-  @Column({ name: "dataAtualizacao", type: "timestamp" })
+  @Column({ name: 'dataAtualizacao', type: 'timestamp' })
   dataAtualizacao: Date;
 
   novoUsuario(novoUsuario: {
@@ -115,14 +115,14 @@ export class UsuarioAdmin extends EntityDomain {
     for (let i = 0; i < qtdCaracteres; i++) {
       //nomeUsuarioSemCaracteresInvalidos = nomeUsuarioSemCaracteresInvalidos.replace(/\s+/, ''); //espaços
       nomeUsuarioSemCaracteresInvalidos =
-        nomeUsuarioSemCaracteresInvalidos.replace(/\d/, ""); //numeros
+        nomeUsuarioSemCaracteresInvalidos.replace(/\d/, ''); //numeros
       nomeUsuarioSemCaracteresInvalidos =
-        nomeUsuarioSemCaracteresInvalidos.replace(/[a-z]/, ""); //minusculas
+        nomeUsuarioSemCaracteresInvalidos.replace(/[a-z]/, ''); //minusculas
       nomeUsuarioSemCaracteresInvalidos =
-        nomeUsuarioSemCaracteresInvalidos.replace(/[A-Z]/, ""); //maiusculas
+        nomeUsuarioSemCaracteresInvalidos.replace(/[A-Z]/, ''); //maiusculas
     }
 
-    if (nomeUsuarioSemCaracteresInvalidos !== "") return false;
+    if (nomeUsuarioSemCaracteresInvalidos !== '') return false;
 
     return true;
   }

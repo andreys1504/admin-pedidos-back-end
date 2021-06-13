@@ -1,8 +1,8 @@
-import { ValidSqlParameter } from "../../../core/helpers";
-import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../repository";
-import { Produto } from "../../../domain/entities";
-import { ProdutoImagens } from "../../../domain/entities/produto-imagens";
+import { ValidSqlParameter } from '../../../core/helpers';
+import { DatabaseTables } from '../../../core/infra/data/database-tables';
+import { RepositoryBase } from '../repository';
+import { Produto } from '../../../domain/entities';
+import { ProdutoImagens } from '../../../domain/entities/produto-imagens';
 
 export class ProdutoRepository extends RepositoryBase<Produto> {
     constructor() {
@@ -34,11 +34,11 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                                 : ' * '
                             }
                         FROM
-                            "${DatabaseTables.PRODUTO}" "${aliasTabela}"
+                            '${DatabaseTables.PRODUTO}' '${aliasTabela}'
                         WHERE
-                            "${aliasTabela}"."descricao" ILIKE '${like}'
+                            '${aliasTabela}'.'descricao' ILIKE '${like}'
                         ORDER BY
-                            "${aliasTabela}"."descricao" ASC
+                            '${aliasTabela}'.'descricao' ASC
             `;
 
         const produtos = await this.retornarDadosPorSqlAsync<Produto>({ sql });
@@ -50,11 +50,11 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                         sql: 
                         `
                             SELECT
-                                "produtoImagens"."nomeArquivo"
+                                'produtoImagens'.'nomeArquivo'
                             FROM
-                                "${DatabaseTables.PRODUTO_IMAGENS}" "produtoImagens"
+                                '${DatabaseTables.PRODUTO_IMAGENS}' 'produtoImagens'
                             WHERE
-                                "produtoImagens"."produtoId" = $1
+                                'produtoImagens'.'produtoId' = $1
                         `,
                         parametros: [produto.id]
                     })
@@ -71,7 +71,7 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
     }) {
         await this.contextoBase.transaction(async transactionalEntityManager => {
             transactionalEntityManager.query(`
-                DELETE FROM "${DatabaseTables.PRODUTO_IMAGENS}" WHERE "produtoId" = $1
+                DELETE FROM '${DatabaseTables.PRODUTO_IMAGENS}' WHERE 'produtoId' = $1
             `, [entidades.produtoEdicao.id]);
 
             entidades.imagensProduto.forEach(async imagem => {
@@ -86,12 +86,12 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
         const sql = 
             `
                 SELECT
-                    "produtoImagens"."nomeArquivo" AS "nomeArquivo"
-                    ,"produtoImagens"."imagemDestaque" AS "imagemDestaque"
+                    'produtoImagens'.'nomeArquivo' AS 'nomeArquivo'
+                    ,'produtoImagens'.'imagemDestaque' AS 'imagemDestaque'
                 FROM
-                    "${DatabaseTables.PRODUTO_IMAGENS}" "produtoImagens"
+                    '${DatabaseTables.PRODUTO_IMAGENS}' 'produtoImagens'
                 WHERE
-                    "produtoImagens"."produtoId" = $1
+                    'produtoImagens'.'produtoId' = $1
             `;
 
         return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });
@@ -101,13 +101,13 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
         const sql = 
             `
                 SELECT
-                    "produtoImagens"."nomeArquivo" AS "nomeArquivo"
-                    ,"produtoImagens"."imagemDestaque" AS "imagemDestaque"
+                    'produtoImagens'.'nomeArquivo' AS 'nomeArquivo'
+                    ,'produtoImagens'.'imagemDestaque' AS 'imagemDestaque'
                 FROM
-                    "${DatabaseTables.PRODUTO_IMAGENS}" "produtoImagens"
+                    '${DatabaseTables.PRODUTO_IMAGENS}' 'produtoImagens'
                 WHERE
-                    "produtoImagens"."produtoId" = $1
-                    AND "produtoImagens"."imagemDestaque" = true
+                    'produtoImagens'.'produtoId' = $1
+                    AND 'produtoImagens'.'imagemDestaque' = true
             `;
 
         return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });
@@ -117,13 +117,13 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
         const sql = 
             `
                 SELECT
-                    "produtoImagens"."nomeArquivo" AS "nomeArquivo"
-                    ,"produtoImagens"."imagemDestaque" AS "imagemDestaque"
+                    'produtoImagens'.'nomeArquivo' AS 'nomeArquivo'
+                    ,'produtoImagens'.'imagemDestaque' AS 'imagemDestaque'
                 FROM
-                    "${DatabaseTables.PRODUTO_IMAGENS}" "produtoImagens"
+                    '${DatabaseTables.PRODUTO_IMAGENS}' 'produtoImagens'
                 WHERE
-                    "produtoImagens"."produtoId" = $1
-                    AND "produtoImagens"."imagemDestaque" = false
+                    'produtoImagens'.'produtoId' = $1
+                    AND 'produtoImagens'.'imagemDestaque' = false
             `;
 
         return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });

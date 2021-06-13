@@ -1,6 +1,6 @@
 import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 import { Flunt } from "../../../../core/validations/flunt";
-import { Produto } from "../../../entities";
 
 export class ProdutosParaEdicaoRequest extends RequestAppService {
   constructor(
@@ -23,11 +23,15 @@ export class ProdutosParaEdicaoRequest extends RequestAppService {
         "descricao",
         "PRODUTO não informado"
       );
-      if (!Produto.nomeProdutoValido(this.requestModel.descricao)) {
-        this.addNotification("descricao", "PRODUTO inválido");
-      }
+      flunt.isBetween(
+        this.requestModel.descricao,
+        1,
+        45,
+        "descricao",
+        "PRODUTO inválido"
+      );
     } else if (!this.requestModel.idProduto) {
-      throw new Error("nenhum item foi informado");
+      throw new DomainException("nenhum item foi informado");
     }
 
     this.addNotifications(flunt.notifications);

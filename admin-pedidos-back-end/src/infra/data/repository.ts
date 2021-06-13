@@ -1,4 +1,4 @@
-import { Repository, FindManyOptions, FindOneOptions, getManager } from "typeorm";
+import { Repository, FindManyOptions, FindOneOptions, getManager } from 'typeorm';
 
 export abstract class RepositoryBase<TEntidade> {
     private readonly repositorio: Repository<TEntidade>;
@@ -13,7 +13,7 @@ export abstract class RepositoryBase<TEntidade> {
 
     public async entidadeAsync(opcoesBusca: {
         camposRetorno: (keyof TEntidade)[],
-        ordernacao?: { [P in keyof TEntidade]?: "ASC" | "DESC" | 1 | -1; },
+        ordernacao?: { [P in keyof TEntidade]?: 'ASC' | 'DESC' | 1 | -1; },
         filtro?: object,
         entidadesRelacionadas?: string[]
     }) {
@@ -37,7 +37,7 @@ export abstract class RepositoryBase<TEntidade> {
 
     public async entidadesAsync(opcoesBusca: {
         camposRetorno: (keyof TEntidade)[],
-        ordernacao?: { [P in keyof TEntidade]?: "ASC" | "DESC" | 1 | -1; },
+        ordernacao?: { [P in keyof TEntidade]?: 'ASC' | 'DESC' | 1 | -1; },
         filtro?: object,
         entidadesRelacionadas?: string[]
     }) {
@@ -80,7 +80,7 @@ export abstract class RepositoryBase<TEntidade> {
         let camposSelect = ' ';
         opcoesRetorno.camposRetorno.forEach(campo => {
             contador++;
-            camposSelect += `${opcoesRetorno.aliasTabela}."${campo}"`;
+            camposSelect += `${opcoesRetorno.aliasTabela}.'${campo}'`;
 
             if (quantidadeCampos != contador)
                 camposSelect += ',';

@@ -1,5 +1,5 @@
-import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
-import { Flunt } from "../../../../core/validations/flunt";
+import { RequestAppService } from '../../../../core/domain/application-services/request/request-app-service';
+import { Flunt } from '../../../../core/validations/flunt';
 
 export class PedidosParaTratamentoRequest extends RequestAppService {
   constructor(

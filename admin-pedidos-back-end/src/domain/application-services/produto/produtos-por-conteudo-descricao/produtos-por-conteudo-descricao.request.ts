@@ -1,6 +1,5 @@
 import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
 import { Flunt } from "../../../../core/validations/flunt";
-import { Produto } from "../../../entities";
 
 export class ProdutosPorConteudoDescricaoRequest extends RequestAppService {
   constructor(
@@ -19,9 +18,7 @@ export class ProdutosPorConteudoDescricaoRequest extends RequestAppService {
       "descricao",
       "PRODUTO não informado"
     );
-    if (!Produto.nomeProdutoValido(this.requestModel.descricao)) {
-      this.addNotification("descricao", "PRODUTO inválido");
-    }
+    flunt.isBetween(this.requestModel.descricao, 1, 45, "descricao", "PRODUTO inválido");
 
     this.addNotifications(flunt.notifications);
 

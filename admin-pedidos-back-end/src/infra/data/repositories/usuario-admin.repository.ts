@@ -1,6 +1,6 @@
-import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../repository";
-import { UsuarioAdmin } from "../../../domain/entities";
+import { DatabaseTables } from '../../../core/infra/data/database-tables';
+import { RepositoryBase } from '../repository';
+import { UsuarioAdmin } from '../../../domain/entities';
 
 export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
     constructor() {
@@ -14,16 +14,16 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
         const sql =
             `
                 SELECT
-                    "usu"."id" as "id" 
-                    ,"usu"."nomeUsuario" as "nomeUsuario"
-                    ,"usu"."necessarioAlteracaoSenha" as "necessarioAlteracaoSenha"
-                    ,"usu"."ativo" as "ativo"
-                    ,"usu"."nome" as "nome"
+                    'usu'.'id' as 'id' 
+                    ,'usu'.'nomeUsuario' as 'nomeUsuario'
+                    ,'usu'.'necessarioAlteracaoSenha' as 'necessarioAlteracaoSenha'
+                    ,'usu'.'ativo' as 'ativo'
+                    ,'usu'.'nome' as 'nome'
                 FROM
-                    "${DatabaseTables.USUARIO_ADMIN}" "usu"
+                    '${DatabaseTables.USUARIO_ADMIN}' 'usu'
                 WHERE
-                    "usu"."nomeUsuario" = $1
-                    AND "usu"."senha" = $2
+                    'usu'.'nomeUsuario' = $1
+                    AND 'usu'.'senha' = $2
             `;
 
         let usuario =
@@ -36,13 +36,13 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
             const sqlPermissoes = 
                 `
                     SELECT
-                        "perm"."chave" as "chave"
+                        'perm'.'chave' as 'chave'
                     FROM
-                        "${DatabaseTables.USUARIO_ADMIN}" "usu"
-                        LEFT JOIN "${DatabaseTables.USUARIO_PERMISSOES}" "usuPerm" ON "usu"."id" = "usuPerm"."usuarioAdminId" 
-                        LEFT JOIN "${DatabaseTables.PERMISSAO_ACESSO}" "perm" ON "usuPerm"."permissaoAcessoId" = "perm"."id"
+                        '${DatabaseTables.USUARIO_ADMIN}' 'usu'
+                        LEFT JOIN '${DatabaseTables.USUARIO_PERMISSOES}' 'usuPerm' ON 'usu'.'id' = 'usuPerm'.'usuarioAdminId' 
+                        LEFT JOIN '${DatabaseTables.PERMISSAO_ACESSO}' 'perm' ON 'usuPerm'.'permissaoAcessoId' = 'perm'.'id'
                     WHERE
-                        "usu"."id" = $1
+                        'usu'.'id' = $1
                 `;
             const permissoes = 
                 await this.retornarDadosPorSqlAsync<string>({ 
@@ -60,24 +60,24 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
         const sql = 
             `
                 SELECT
-                    "usu"."id" as "id"
-                    ,"usu"."nomeUsuario" as "nomeUsuario"
-                    ,"usu"."necessarioAlteracaoSenha" as "necessarioAlteracaoSenha"
-                    ,"usu"."ativo" as "ativo"
-                    ,"usu"."nome" as "nome"
-                    ,"usu"."dataCriacao" as "dataCriacao"
-                    ,"usu"."dataAtualizacao" as "dataAtualizacao"
-                    ,"perm"."chave" as "permissaoCadastroUsuario"
+                    'usu'.'id' as 'id'
+                    ,'usu'.'nomeUsuario' as 'nomeUsuario'
+                    ,'usu'.'necessarioAlteracaoSenha' as 'necessarioAlteracaoSenha'
+                    ,'usu'.'ativo' as 'ativo'
+                    ,'usu'.'nome' as 'nome'
+                    ,'usu'.'dataCriacao' as 'dataCriacao'
+                    ,'usu'.'dataAtualizacao' as 'dataAtualizacao'
+                    ,'perm'.'chave' as 'permissaoCadastroUsuario'
                 FROM
-                    "${DatabaseTables.USUARIO_ADMIN}" "usu"
-                    LEFT JOIN "${DatabaseTables.USUARIO_PERMISSOES}" "usuPerm" ON "usu"."id" = "usuPerm"."usuarioAdminId" 
-                    LEFT JOIN "${DatabaseTables.PERMISSAO_ACESSO}" "perm" ON "usuPerm"."permissaoAcessoId" = "perm"."id"
+                    '${DatabaseTables.USUARIO_ADMIN}' 'usu'
+                    LEFT JOIN '${DatabaseTables.USUARIO_PERMISSOES}' 'usuPerm' ON 'usu'.'id' = 'usuPerm'.'usuarioAdminId' 
+                    LEFT JOIN '${DatabaseTables.PERMISSAO_ACESSO}' 'perm' ON 'usuPerm'.'permissaoAcessoId' = 'perm'.'id'
                 WHERE
-                    ("perm".id = '1' --permissao cadastro usuário
-                    OR "perm".id IS NULL)
-                    AND "usu"."id" > 0
+                    ('perm'.id = '1' --permissao cadastro usuário
+                    OR 'perm'.id IS NULL)
+                    AND 'usu'.'id' > 0
                 ORDER BY
-                    "usu"."dataAtualizacao" DESC
+                    'usu'.'dataAtualizacao' DESC
             `;
 
         return await this.retornarDadosPorSqlAsync<any>({ sql });
@@ -90,9 +90,9 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
                 SELECT 
                     usuario.id
                 FROM 
-                    "${DatabaseTables.USUARIO_ADMIN}" usuario
+                    '${DatabaseTables.USUARIO_ADMIN}' usuario
                 WHERE
-                    UPPER(usuario."nomeUsuario") = $1
+                    UPPER(usuario.'nomeUsuario') = $1
                 ORDER BY 
                     usuario.id
             `;

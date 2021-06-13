@@ -7,6 +7,7 @@ import { AppService } from "../../../../core/domain/application-services/service
 import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
 import { PedidoItem } from "../../../entities";
 import { PedidosParaTratamentoRequest } from "../pedidos-para-tratamento/pedidos-para-tratamento.request";
+import { DomainException } from "../../../../core/domain/exceptions/domain.exception";
 
 export class EdicaoPedidoAppService extends AppService<any> {
   private readonly pedidoRepository = new PedidoRepository();
@@ -45,7 +46,7 @@ export class EdicaoPedidoAppService extends AppService<any> {
       opcoesBuscaPedido
     );
     if (!pedidoParaEdicao) {
-      throw new Error("PEDIDO inválido");
+      throw new DomainException("PEDIDO inválido");
     }
 
     pedidoParaEdicao.editar({
@@ -56,7 +57,7 @@ export class EdicaoPedidoAppService extends AppService<any> {
       dataPrevisaoEntrega: dadosEdicao.dataPrevisaoEntrega,
       dataFinalizacaoPedido: dadosEdicao.dataFinalizacaoPedido,
       idClienteVinculadoPedido: dadosEdicao.idClienteVinculadoPedido,
-      tamanhoItensPedido: dadosEdicao.tamanhoItensPedido,
+      observacoes: dadosEdicao.observacoes,
       idUsuarioResponsavelPedido: dadosEdicao.idUsuarioResponsavelPedido,
     });
 
@@ -66,14 +67,16 @@ export class EdicaoPedidoAppService extends AppService<any> {
     });
 
     const pedidoEditado =
-      await this.pedidosParaTratamentoAppService.handleAsync(new PedidosParaTratamentoRequest({
-        idPedido: pedidoParaEdicao.id,
-        cpfCnpj: undefined,
-        dataEmissaoPedido: undefined,
-        pedidosPendentes: undefined,
-        idUsuarioResponsavelPedido: undefined,
-        pedidoRealizadoLojaVirtual: false,
-      }));
+      await this.pedidosParaTratamentoAppService.handleAsync(
+        new PedidosParaTratamentoRequest({
+          idPedido: pedidoParaEdicao.id,
+          cpfCnpj: undefined,
+          dataEmissaoPedido: undefined,
+          pedidosPendentes: undefined,
+          idUsuarioResponsavelPedido: undefined,
+          pedidoRealizadoLojaVirtual: false,
+        })
+      );
 
     return this.returnData(pedidoEditado.data[0]);
   }

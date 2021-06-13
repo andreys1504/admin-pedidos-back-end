@@ -1,7 +1,7 @@
-import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { PedidoRepository } from "../../../../infra/data/repositories/pedido.repository";
-import { Pedido } from "../../../entities";
-import { CadastroPedidoRequest, ItemPedidoCadastroModel } from "./cadastro-pedido.request";
+import { AppService } from '../../../../core/domain/application-services/service/app-service';
+import { PedidoRepository } from '../../../../infra/data/repositories/pedido.repository';
+import { Pedido } from '../../../entities';
+import { CadastroPedidoRequest, ItemPedidoCadastroModel } from './cadastro-pedido.request';
 
 export class CadastroPedidoAppService extends AppService<Pedido> {
     private readonly pedidoRepository = new PedidoRepository();
@@ -33,7 +33,7 @@ export class CadastroPedidoAppService extends AppService<Pedido> {
             clienteId: dadosCadastro.idClienteVinculadoPedido,
             tipoPedidoId: dadosCadastro.idTipoPedido,
             dataPrevisaoEntrega: dadosCadastro.dataPrevisaoEntrega,
-            tamanhoItensPedido: dadosCadastro.tamanhoItensPedido,
+            observacoes: dadosCadastro.observacoes,
             dataFinalizacaoPedido: dadosCadastro.dataFinalizacaoPedido,
             idUsuarioResponsavelPedido: dadosCadastro.idUsuarioResponsavelPedido,
             itensPedido: itensPedido

@@ -6,7 +6,6 @@ export class CadastroClienteRequest extends RequestAppService {
   constructor(
     public requestModel: {
       nome: string;
-      nomeGuerra: string;
       idTipoCliente: number;
       cpfCnpj: string;
       logradouro: string;
@@ -15,8 +14,7 @@ export class CadastroClienteRequest extends RequestAppService {
       siglaUf: string;
       telefone: string;
       email: string;
-      tipoSanguineo: string;
-      medidasCliente: string;
+      observacoes: string;
     }
   ) {
     super();
@@ -32,22 +30,6 @@ export class CadastroClienteRequest extends RequestAppService {
     flunt.hasMinLen(this.requestModel.nome, 2, "nome", "NOME inválido");
     flunt.hasMaxLen(this.requestModel.nome, 45, "nome", "NOME inválido");
 
-    if (this.requestModel.nomeGuerra) {
-      this.requestModel.nomeGuerra = this.requestModel.nomeGuerra.trim();
-    }
-    flunt.hasMinLen(
-      this.requestModel.nomeGuerra,
-      2,
-      "nomeGuerra",
-      "NOME DE GUERRA inválido"
-    );
-    flunt.hasMaxLen(
-      this.requestModel.nomeGuerra,
-      45,
-      "nomeGuerra",
-      "NOME DE GUERRA inválido"
-    );
-
     flunt.hasMinLen(
       this.requestModel.idTipoCliente,
       1,
@@ -56,20 +38,16 @@ export class CadastroClienteRequest extends RequestAppService {
     );
 
     if (this.requestModel.cpfCnpj) {
-      this.requestModel.cpfCnpj = getNumbersText(
-        this.requestModel.cpfCnpj
-      );
+      this.requestModel.cpfCnpj = getNumbersText(this.requestModel.cpfCnpj);
     }
     flunt.isNotNullOrEmpty(
       this.requestModel.cpfCnpj,
       "cpfCnpj",
       "CPF/CNPJ obrigatório"
     );
-
     if (Flunt.isCpf(this.requestModel.cpfCnpj))
       flunt.isCpf(this.requestModel.cpfCnpj, "cpfCnpj", "CPF invalido");
-    else
-      flunt.isCnpj(this.requestModel.cpfCnpj, "cpfCnpj", "CNPJ inválido");
+    else flunt.isCnpj(this.requestModel.cpfCnpj, "cpfCnpj", "CNPJ inválido");
 
     if (this.requestModel.logradouro) {
       this.requestModel.logradouro = this.requestModel.logradouro.trim();
@@ -115,31 +93,15 @@ export class CadastroClienteRequest extends RequestAppService {
 
     if (this.requestModel.telefone) {
       this.requestModel.telefone = this.requestModel.telefone.trim();
-      this.requestModel.telefone = getNumbersText(
-        this.requestModel.telefone
-      );
+      this.requestModel.telefone = getNumbersText(this.requestModel.telefone);
     }
-    flunt.isPhone(
-      this.requestModel.telefone,
-      "telefone",
-      "TELEFONE inválido"
-    );
+    flunt.isPhone(this.requestModel.telefone, "telefone", "TELEFONE inválido");
 
     if (this.requestModel.email) {
       this.requestModel.email = this.requestModel.email.trim();
     }
     flunt.isEmail(this.requestModel.email, "email", "E-MAIL inválido");
     flunt.hasMaxLen(this.requestModel.email, 100, "email", "E-MAIL inválido");
-
-    if (this.requestModel.tipoSanguineo) {
-      this.requestModel.tipoSanguineo = this.requestModel.tipoSanguineo.trim();
-    }
-    flunt.hasMaxLen(
-      this.requestModel.tipoSanguineo,
-      10,
-      "tipoSanguineo",
-      "corriga TIPO SANGUÍNEO"
-    );
 
     this.addNotifications(flunt.notifications);
 

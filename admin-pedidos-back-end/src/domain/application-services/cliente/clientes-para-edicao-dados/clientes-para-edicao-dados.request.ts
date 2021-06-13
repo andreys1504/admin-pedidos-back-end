@@ -1,7 +1,6 @@
 import { RequestAppService } from "../../../../core/domain/application-services/request/request-app-service";
 import { getNumbersText } from "../../../../core/helpers";
 import { Flunt } from "../../../../core/validations/flunt";
-import { Cliente } from "../../../entities";
 
 export class ClientesParaEdicaoDadosRequest extends RequestAppService {
   constructor(
@@ -32,9 +31,7 @@ export class ClientesParaEdicaoDadosRequest extends RequestAppService {
         flunt.isCnpj(cpfCnpj, "cpfCnpj", "CPF ou CNPJ inválidos");
       }
     } else {
-      if (!Cliente.nomeClienteValido(this.requestModel.nomeCpfCnpj)) {
-        this.addNotification(this.requestModel.nomeCpfCnpj, "NOME inválido");
-      }
+      flunt.isBetween(this.requestModel.nomeCpfCnpj, 2, 45, 'nomeCpfCnpj', 'NOME inválido');
     }
 
     this.addNotifications(flunt.notifications);

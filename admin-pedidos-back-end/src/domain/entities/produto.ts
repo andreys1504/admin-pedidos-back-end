@@ -1,30 +1,30 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
-import { DatabaseTables } from "../../core/infra/data/database-tables";
-import { PedidoItem } from "./pedido-item";
-import { TipoProduto } from "./tipo-produto";
-import { Entity as EntityDomain } from "../../core/domain/entities/entity";
-import { ProdutoImagens } from "./produto-imagens";
+import { DatabaseTables } from '../../core/infra/data/database-tables';
+import { PedidoItem } from './pedido-item';
+import { TipoProduto } from './tipo-produto';
+import { Entity as EntityDomain } from '../../core/domain/entities/entity';
+import { ProdutoImagens } from './produto-imagens';
 
 @Entity(DatabaseTables.PRODUTO)
 export class Produto extends EntityDomain {
-    @PrimaryGeneratedColumn({ name: "id", type: 'integer' })
+    @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
     id: number;
 
-    @Column({ name: "descricao", length: 150, type: 'character varying' })
+    @Column({ name: 'descricao', length: 150, type: 'character varying' })
     descricao: string;
 
-    @Column({ name: "ativo", type: 'boolean' })
+    @Column({ name: 'ativo', type: 'boolean' })
     ativo: boolean;
 
-    @Column({ name: "valorUnitario", type: 'numeric' })
+    @Column({ name: 'valorUnitario', type: 'numeric' })
     valorUnitario: string;
 
-    @Column({ name: DatabaseTables.TIPO_PRODUTO + "Id", type: 'integer' })
+    @Column({ name: DatabaseTables.TIPO_PRODUTO + 'Id', type: 'integer' })
     tipoProdutoId: number;
 
     @ManyToOne(type => TipoProduto, tipoProduto => tipoProduto.produtos)
-    @JoinColumn({ name: DatabaseTables.TIPO_PRODUTO + "Id" })
+    @JoinColumn({ name: DatabaseTables.TIPO_PRODUTO + 'Id' })
     tipoProduto: TipoProduto;
 
     @OneToMany(type => PedidoItem, pedidoItem => pedidoItem.produto)
@@ -33,16 +33,16 @@ export class Produto extends EntityDomain {
     @OneToMany(type => ProdutoImagens, produtoImagens => produtoImagens.produto, { cascade: true })
     imagens: ProdutoImagens[];
 
-    @Column({ name: "detalhesProduto", type: 'text' })
+    @Column({ name: 'detalhesProduto', type: 'text' })
     detalhesProduto: string | null;
 
-    @Column({ name: "destaqueTelaPrincipal", type: 'boolean' })
+    @Column({ name: 'destaqueTelaPrincipal', type: 'boolean' })
     destaqueTelaPrincipal: boolean;
 
-    @Column({ name: "dataCriacao", type: 'timestamp' })
+    @Column({ name: 'dataCriacao', type: 'timestamp' })
     dataCriacao: Date;
 
-    @Column({ name: "dataAtualizacao", type: 'timestamp' })
+    @Column({ name: 'dataAtualizacao', type: 'timestamp' })
     dataAtualizacao: Date;
 
     novoProduto(produto: {
@@ -89,13 +89,6 @@ export class Produto extends EntityDomain {
         this.destaqueTelaPrincipal = produto.destaqueTelaPrincipal;
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
-    }
-
-    static nomeProdutoValido(valor: string) {
-        if (!valor || valor.length < 1 || valor.length > 45)
-            return false;
-
-        return true;
     }
 
     editar(produto: {
