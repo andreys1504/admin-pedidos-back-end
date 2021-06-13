@@ -30,7 +30,7 @@ os arquivos yml são um exemplo para realizar a publicação da Api em um ambien
 
 - controllers
 
-recuperarValorBoleanoRequisicao
+para recuperar volores boleanos utilizar: getBooleanValueRequest.
 
 - entidades
 
@@ -54,4 +54,4 @@ campos que mapeiam colunas 'date' devem ser definidas como 'string', exceto as p
 
 - repositórios
 
-não inserir string vazias e sim 'null'
+não inserir string vazias e sim 'null'.
