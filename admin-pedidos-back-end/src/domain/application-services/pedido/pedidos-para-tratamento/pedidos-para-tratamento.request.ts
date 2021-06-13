@@ -9,7 +9,6 @@ export class PedidosParaTratamentoRequest extends RequestAppService {
       dataEmissaoPedido?: string | undefined;
       pedidosPendentes?: boolean | undefined;
       idUsuarioResponsavelPedido?: number | undefined;
-      pedidoRealizadoLojaVirtual: boolean;
     }
   ) {
     super();

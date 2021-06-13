@@ -74,7 +74,6 @@ export class EdicaoPedidoAppService extends AppService<any> {
           dataEmissaoPedido: undefined,
           pedidosPendentes: undefined,
           idUsuarioResponsavelPedido: undefined,
-          pedidoRealizadoLojaVirtual: false,
         })
       );
 

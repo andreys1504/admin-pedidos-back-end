@@ -83,29 +83,6 @@ export class PedidoItem extends EntityDomain {
         this.nomeFuncionarioResponsavel = dados.nomeFuncionarioResponsavel;
     }
 
-    novoPedidoItemOriundoLojaVirtual(dados: {
-        id: number | null,
-        idPedido: number | null,
-        idProduto: number,
-        quantidade: number,
-        valorUnitario: string,
-    }) {
-        if (dados.id)
-            this.id = dados.id;
-
-        if (dados.idPedido)
-            this.pedidoId = dados.idPedido;
-
-        this.produtoId = dados.idProduto;
-        this.quantidade = dados.quantidade;
-        this.situacaoInternaItemPedidoId = IdsSituacoesInternasItemPedidoConstante.Recebido;
-        this.valorUnitario = dados.valorUnitario;
-        this.situacaoExternaItemPedidoId = IdsSituacoesExternasItemPedidoConstante.EmAndamento;
-        this.valorTotal = this.calcularValorTotal({ valorUnitario: this.valorUnitario, quantidade: this.quantidade });
-        this.dataAtualizacao = new Date();
-        this.nomeFuncionarioResponsavel = null;
-    }
-
     calcularValorTotal(dados: {
         valorUnitario: string;
         quantidade: number;

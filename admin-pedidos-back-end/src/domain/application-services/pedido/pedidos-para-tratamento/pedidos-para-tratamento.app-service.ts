@@ -53,14 +53,6 @@ export class PedidosParaTratamentoAppService extends AppService<any> {
           };
         }
       }
-
-      if (request.requestModel.pedidoRealizadoLojaVirtual) {
-        opcoesBusca.filtro = {
-          ...opcoesBusca.filtro,
-          pedidoRealizadoLojaVirtual:
-            request.requestModel.pedidoRealizadoLojaVirtual,
-        };
-      }
     }
 
     opcoesBusca.entidadesRelacionadas = [

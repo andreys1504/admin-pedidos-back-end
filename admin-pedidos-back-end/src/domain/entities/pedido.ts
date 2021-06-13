@@ -107,9 +107,6 @@ export class Pedido extends EntityDomain {
   @Column({ name: "observacaoCliente", type: "text" })
   observacaoCliente: string | null;
 
-  @Column({ name: "pedidoRealizadoLojaVirtual", type: "boolean" })
-  pedidoRealizadoLojaVirtual: boolean;
-
   @Column({
     name: "idPedidoEmSistemaPagamentoExterno",
     type: "character varying",
@@ -154,7 +151,6 @@ export class Pedido extends EntityDomain {
     this.usuarioResponsavelPedidoId = dados.idUsuarioResponsavelPedido;
     this.receberPedidoResidencia = null;
     this.observacaoCliente = null;
-    this.pedidoRealizadoLojaVirtual = false;
     this.idPedidoEmSistemaPagamentoExterno = null;
     this.id2 = null;
 

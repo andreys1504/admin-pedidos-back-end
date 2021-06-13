@@ -4,5 +4,4 @@ export interface PedidosParaTratamentoRequestApi {
     dataEmissaoPedido?: string;
     pedidosPendentes?: boolean | undefined;
     idUsuarioResponsavelPedido?: number;
-    pedidoRealizadoLojaVirtual: boolean;
 }

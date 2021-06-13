@@ -12,8 +12,7 @@ export class PedidosParaTratamentoController extends ApiAdminController {
     async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.query as unknown as PedidosParaTratamentoRequestApi;
         requestApi.pedidosPendentes = getBooleanValueRequest(routeContext.request.query.pedidosPendentes as string);
-        requestApi.pedidoRealizadoLojaVirtual = getBooleanValueRequest(routeContext.request.query.pedidoRealizadoLojaVirtual as string) || false;
-
+        
         const requestAppService = new PedidosParaTratamentoRequest({
             ...requestApi
         });

@@ -32,7 +32,6 @@ export class PedidoRepository extends RepositoryBase<Pedido> {
                     ,'pedido'.'situacaoExternaPedidoId'
                     ,'situacaoExternaPedido'.'descricao' AS 'situacaoExternaPedido_descricao'
                     ,'pedido'.'dataFinalizacaoPedido'
-                    ,'pedido'.'pedidoRealizadoLojaVirtual'
                     ,'pedido'.'receberPedidoResidencia'
                 FROM
                     '${DatabaseTables.PEDIDO}' 'pedido'
