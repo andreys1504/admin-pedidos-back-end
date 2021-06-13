@@ -1,6 +1,6 @@
 import azure from 'azure-storage';
 import { GlobalSettings } from '../../core/configurations/global-settings';
-import { gerarGuid } from '../../core/helpers';
+import { generateGuid } from '../../core/helpers';
 
 
 const blobService = azure.createBlobService('AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;');
@@ -10,7 +10,7 @@ const enviarImagem = async (imagem: string): Promise<string> => {
     if (imagemMatches) {
         const tipoImagem = imagemMatches[1];
         const bufferImagem = Buffer.from(imagemMatches[2], 'base64');
-        const nomeImage = gerarGuid() + '.' + tipoImagem.split('/')[1];
+        const nomeImage = generateGuid() + '.' + tipoImagem.split('/')[1];
 
         return new Promise((resolve, reject) => {
             blobService.createBlockBlobFromText(

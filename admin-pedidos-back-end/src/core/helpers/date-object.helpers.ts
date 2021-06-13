@@ -1,5 +1,5 @@
 
-export const dataDDMMAAAA = (data: Date) => {
+export const dateDDMMAAAA = (data: Date) => {
     const dd = String(data.getDate()).padStart(2, '0');
     const mm = String(data.getMonth() + 1).padStart(2, '0');
     const aaaa = data.getFullYear();
@@ -7,17 +7,17 @@ export const dataDDMMAAAA = (data: Date) => {
     return dd + '/' + mm + '/' + aaaa;
 }
 
-export const dataFormatoPadrao = (dd: number, mm: number, aaaa: number) => {
+export const dateStandardFormat = (dd: number, mm: number, aaaa: number) => {
     return new Date(+aaaa, (+mm) - 1, +dd);
 }
 
-export const dataAAAAMMDD = (data: Date) => {
-    return dataFormatoPadraoEmString(data.getDate(), data.getMonth() + 1, data.getFullYear());
+export const dateAAAAMMDD = (data: Date) => {
+    return dateStandardFormatInString(data.getDate(), data.getMonth() + 1, data.getFullYear());
 }
 
 //#region Auxiliares
 
-const dataFormatoPadraoEmString = (dd: number, mm: number, aaaa: number) => {
+const dateStandardFormatInString = (dd: number, mm: number, aaaa: number) => {
     return aaaa.toString() + - + mm.toString() + - + dd.toString();
 }
 

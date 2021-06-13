@@ -8,11 +8,13 @@ import { ResponseApiStatusCode } from "../../../configurations/response-api-stat
 export class EdicaoProdutoController extends ApiAdminController {
     private readonly appService = new EdicaoProdutoAppService();
 
-    async handle(routeContext: RouteContext) {
-        const requestAppService = (routeContext.request.body as EdicaoProdutoRequestApi) as EdicaoProdutoRequest;
-        requestAppService.idProduto = Number(routeContext.request.params.id);
-
-        const responseAppService = await this.appService.handle(requestAppService);
+    async handleAsync(routeContext: RouteContext) {
+        const requestApi = (routeContext.request.body as EdicaoProdutoRequestApi);
+        const requestAppService = new EdicaoProdutoRequest({
+            ...requestApi,
+            idProduto: Number(routeContext.request.params.id)
+        });
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.ATUALIZACAO);
     }
 }

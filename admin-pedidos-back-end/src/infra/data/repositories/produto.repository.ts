@@ -1,6 +1,6 @@
-import { parametroValidoSql } from "../../../core/helpers";
+import { ValidSqlParameter } from "../../../core/helpers";
 import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { Produto } from "../../../domain/entities";
 import { ProdutoImagens } from "../../../domain/entities/produto-imagens";
 
@@ -14,7 +14,7 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
         camposRetorno?: string[],
         retornarImagens?: boolean
     }) {
-        if (!parametroValidoSql(opcoesBusca.descricao) || !opcoesBusca.descricao)
+        if (!ValidSqlParameter(opcoesBusca.descricao) || !opcoesBusca.descricao)
             return [] as Produto[];
 
         let like = `%${opcoesBusca.descricao}%`;
@@ -41,12 +41,12 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                             "${aliasTabela}"."descricao" ASC
             `;
 
-        const produtos = await this.retornarDadosPorSql<Produto>({ sql });
+        const produtos = await this.retornarDadosPorSqlAsync<Produto>({ sql });
 
         if(opcoesBusca.retornarImagens === true && produtos && produtos.length > 0) {
             produtos.map(async produto => {
                 produto.imagens = (
-                    await this.retornarDadosPorSql<ProdutoImagens>({
+                    await this.retornarDadosPorSqlAsync<ProdutoImagens>({
                         sql: 
                         `
                             SELECT
@@ -94,7 +94,7 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                     "produtoImagens"."produtoId" = $1
             `;
 
-        return await this.retornarDadosPorSql<ProdutoImagens>({ sql, parametros: [idProduto] });
+        return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });
     }
 
     async imagensDestaqueProduto(idProduto: number) {
@@ -110,7 +110,7 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                     AND "produtoImagens"."imagemDestaque" = true
             `;
 
-        return await this.retornarDadosPorSql<ProdutoImagens>({ sql, parametros: [idProduto] });
+        return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });
     }
 
     async demaisImagensProduto(idProduto: number) {
@@ -126,6 +126,6 @@ export class ProdutoRepository extends RepositoryBase<Produto> {
                     AND "produtoImagens"."imagemDestaque" = false
             `;
 
-        return await this.retornarDadosPorSql<ProdutoImagens>({ sql, parametros: [idProduto] });
+        return await this.retornarDadosPorSqlAsync<ProdutoImagens>({ sql, parametros: [idProduto] });
     }
 }

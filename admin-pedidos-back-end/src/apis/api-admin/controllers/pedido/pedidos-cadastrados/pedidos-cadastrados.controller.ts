@@ -6,8 +6,8 @@ import { PedidosCadastradosAppService } from "../../../../../domain/application-
 export class PedidosCadastradosController extends ApiAdminController {
     private readonly appService = new PedidosCadastradosAppService();
 
-    async handle(routeContext: RouteContext) {
-        const responseAppService = await this.appService.handle();
+    async handleAsync(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handleAsync();
         this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

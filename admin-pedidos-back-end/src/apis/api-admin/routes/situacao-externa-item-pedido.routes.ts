@@ -14,7 +14,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new SituacoesExternasItemPedidoController().handle(routeContext)
+      await new SituacoesExternasItemPedidoController().handleAsync(routeContext)
   )
 );
 
@@ -23,7 +23,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroSituacaoExternaItemPedidoController().handle(
+      await new CadastroSituacaoExternaItemPedidoController().handleAsync(
         routeContext
       )
   )
@@ -34,7 +34,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new SituacoesExternasItemPedidoAtivasController().handle(
+      await new SituacoesExternasItemPedidoAtivasController().handleAsync(
         routeContext
       )
   )

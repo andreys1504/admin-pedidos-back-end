@@ -16,7 +16,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroProdutoController().handle(routeContext)
+      await new CadastroProdutoController().handleAsync(routeContext)
   )
 );
 
@@ -25,7 +25,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new ProdutosPorConteudoDescricaoController().handle(routeContext)
+      await new ProdutosPorConteudoDescricaoController().handleAsync(routeContext)
   )
 );
 
@@ -34,7 +34,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new ProdutosParaCadastroPedidoController().handle(routeContext)
+      await new ProdutosParaCadastroPedidoController().handleAsync(routeContext)
   )
 );
 
@@ -43,7 +43,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new ProdutosParaEdicaoController().handle(routeContext)
+      await new ProdutosParaEdicaoController().handleAsync(routeContext)
   )
 );
 
@@ -52,7 +52,7 @@ routes.put(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new EdicaoProdutoController().handle(routeContext)
+      await new EdicaoProdutoController().handleAsync(routeContext)
   )
 );
 

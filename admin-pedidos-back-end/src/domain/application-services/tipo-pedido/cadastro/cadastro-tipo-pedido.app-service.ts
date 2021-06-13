@@ -1,59 +1,45 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { ValidacaoDados } from "../../../../core/helpers";
 import { TipoPedidoRepository } from "../../../../infra/data/repositories/tipo-pedido.repository";
 import { TipoPedido } from "../../../entities";
+import { CadastroTipoPedidoRequest } from "./cadastro-tipo-pedido.request";
 
-export class CadastroTipoPedidoAppService extends AppService {
-    private readonly tipoPedidoRepository = new TipoPedidoRepository();
-    private readonly validacaoDados = new ValidacaoDados();
+export class CadastroTipoPedidoAppService extends AppService<TipoPedido> {
+  private readonly tipoPedidoRepository = new TipoPedidoRepository();
 
-    async handle(request: {
-        id: number;
-        descricao: string;
-        ativo: boolean;
-    }) {
-        const dadosCadastro = this.validarCadastro(request);
-
-        if (!this.validacaoDados.valido())
-            return this.returnNotifications(this.validacaoDados.recuperarErros());
-        
-        const opcoesBuscaPorId: any = {};
-        opcoesBuscaPorId.camposRetorno = ['id'];
-        opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.tipoPedidoRepository.retornarEntidade(opcoesBuscaPorId))
-            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
-        
-        const opcoesBuscaPorDescricao: any = {};
-        opcoesBuscaPorDescricao.camposRetorno = ['id'];
-        opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao };
-        if (await this.tipoPedidoRepository.retornarEntidade(opcoesBuscaPorDescricao))
-            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
-        
-        const tipoPedido = new TipoPedido();
-        tipoPedido.novoTipoPedido({
-            id: dadosCadastro.id,
-            descricao: dadosCadastro.descricao,
-            ativo: dadosCadastro.ativo
-        })
-        await this.tipoPedidoRepository.salvarEntidade(tipoPedido);
-
-        return this.returnSuccess(tipoPedido);
+  async handleAsync(request: CadastroTipoPedidoRequest) {
+    if (request.validate() === false) {
+      return this.returnNotifications(request.getNotifications);
     }
 
-    private validarCadastro(dadosCadastro: {
-        id: number;
-        descricao: string;
-        ativo: boolean;
-    }) {
-        this.validacaoDados.obrigatorio(dadosCadastro.id, 'ID obrigatório');
-        this.validacaoDados.menorMaior(dadosCadastro.id, 1, 999, 'ID inválido');
-
-        this.validacaoDados.obrigatorio(dadosCadastro.descricao, 'DESCRIÇÃO obrigatória');
-        this.validacaoDados.tamanhoMinimo(dadosCadastro.descricao, 2, 'DESCRIÇÃO inválida');
-        this.validacaoDados.tamanhoMaximo(dadosCadastro.descricao, 45, 'DESCRIÇÃO inválida');
-
-        this.validacaoDados.obrigatorio(dadosCadastro.ativo, 'ATIVO obrigatório');
-
-        return dadosCadastro;
+    const opcoesBuscaPorId: any = {};
+    opcoesBuscaPorId.camposRetorno = ["id"];
+    opcoesBuscaPorId.filtro = { id: request.requestModel.id };
+    if (await this.tipoPedidoRepository.entidadeAsync(opcoesBuscaPorId)) {
+      return this.returnNotification("id", "ID já existente no sistema");
     }
+
+    const opcoesBuscaPorDescricao: any = {};
+    opcoesBuscaPorDescricao.camposRetorno = ["id"];
+    opcoesBuscaPorDescricao.filtro = {
+      descricao: request.requestModel.descricao,
+    };
+    if (
+      await this.tipoPedidoRepository.entidadeAsync(opcoesBuscaPorDescricao)
+    ) {
+      return this.returnNotification(
+        "descricao",
+        "DESCRIÇÃO já existente no sistema"
+      );
+    }
+
+    const tipoPedido = new TipoPedido();
+    tipoPedido.novoTipoPedido({
+      id: request.requestModel.id,
+      descricao: request.requestModel.descricao,
+      ativo: request.requestModel.ativo,
+    });
+    await this.tipoPedidoRepository.salvarAsync(tipoPedido);
+
+    return this.returnData(tipoPedido);
+  }
 }

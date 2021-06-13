@@ -1,6 +1,6 @@
-import { parametroValidoSql } from "../../../core/helpers";
+import { ValidSqlParameter } from "../../../core/helpers";
 import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { Cliente } from "../../../domain/entities";
 
 export class ClienteRepository extends RepositoryBase<Cliente> {
@@ -12,7 +12,7 @@ export class ClienteRepository extends RepositoryBase<Cliente> {
         camposRetorno?: string[],
         nome: string
     }) {
-        if (!parametroValidoSql(opcoesBusca.nome) || !opcoesBusca.nome)
+        if (!ValidSqlParameter(opcoesBusca.nome) || !opcoesBusca.nome)
             return [] as Cliente[];
 
         let like = `%${opcoesBusca.nome}%`;
@@ -39,6 +39,6 @@ export class ClienteRepository extends RepositoryBase<Cliente> {
                     ${aliasTabela}."dataAtualizacao" DESC
             `;
 
-        return await this.retornarDadosPorSql<Cliente>({ sql });
+        return await this.retornarDadosPorSqlAsync<Cliente>({ sql });
     }
 }

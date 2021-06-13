@@ -7,11 +7,11 @@ export abstract class RepositoryBase<TEntidade> {
         this.repositorio = getManager().getRepository(nomeEntidade);
     }
 
-    get contextoBase() {
+    protected get contextoBase() {
         return getManager();
     }
 
-    public async retornarEntidade(opcoesBusca: {
+    public async entidadeAsync(opcoesBusca: {
         camposRetorno: (keyof TEntidade)[],
         ordernacao?: { [P in keyof TEntidade]?: "ASC" | "DESC" | 1 | -1; },
         filtro?: object,
@@ -35,7 +35,7 @@ export abstract class RepositoryBase<TEntidade> {
         return entidade;
     }
 
-    public async retornarColecaoEntidade(opcoesBusca: {
+    public async entidadesAsync(opcoesBusca: {
         camposRetorno: (keyof TEntidade)[],
         ordernacao?: { [P in keyof TEntidade]?: "ASC" | "DESC" | 1 | -1; },
         filtro?: object,
@@ -60,11 +60,11 @@ export abstract class RepositoryBase<TEntidade> {
         return entidade;
     }
 
-    public async salvarEntidade(entidade: TEntidade) {
+    public async salvarAsync(entidade: TEntidade) {
         await this.repositorio.save(entidade);
     }
 
-    protected async retornarDadosPorSql<TRetorno>(opcoesBusca: { 
+    protected async retornarDadosPorSqlAsync<TRetorno>(opcoesBusca: { 
         sql: string,
         parametros?: any[]
     }) {

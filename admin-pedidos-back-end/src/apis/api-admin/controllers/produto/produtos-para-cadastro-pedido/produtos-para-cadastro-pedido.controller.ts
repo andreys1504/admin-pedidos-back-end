@@ -6,8 +6,8 @@ import { ProdutosParaCadastroPedidoAppService } from "../../../../../domain/appl
 export class ProdutosParaCadastroPedidoController extends ApiAdminController {
     private readonly produtosParaCadastroPedidoAppService = new ProdutosParaCadastroPedidoAppService();
 
-    async handle(routeContext: RouteContext) {
-        const responseAppService = await this.produtosParaCadastroPedidoAppService.handle();
+    async handleAsync(routeContext: RouteContext) {
+        const responseAppService = await this.produtosParaCadastroPedidoAppService.handleAsync();
         this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

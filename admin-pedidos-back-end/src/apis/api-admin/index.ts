@@ -6,11 +6,11 @@ const environment = process.env.CURRENT_ENVIRONMENT || Environments.DESENVOLVIME
 if (environment === Environments.DESENVOLVIMENTO_LOCAL)
     dotenv.config();
 
-import { databaseConnection } from '../../infra/data/database/database-connection';
+import { startConnection } from '../../infra/data/database/database-connection';
 import App from './configurations/app';
 import { apiSettings } from './configurations/api-settings';
 
-databaseConnection(process.env);
+startConnection(process.env);
 const server = new App().server; 
 
 console.log('');

@@ -1,75 +1,73 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { extrairNumerosTexto, ValidacaoDados } from "../../../../core/helpers";
+import { getNumbersText } from "../../../../core/helpers";
 import { ClienteRepository } from "../../../../infra/data/repositories/cliente.repository";
 import { TipoClienteRepository } from "../../../../infra/data/repositories/tipo-cliente.repository";
 import { Cliente, TipoCliente } from "../../../entities";
 import { ClientesParaEdicaoDadosRequest } from "./clientes-para-edicao-dados.request";
 
-export class ClientesParaEdicaoDadosAppService extends AppService {
-    private readonly validacaoDados = new ValidacaoDados();
-    private readonly tipoClienteRepository = new TipoClienteRepository();
-    private readonly clienteRepository = new ClienteRepository();
+export class ClientesParaEdicaoDadosAppService extends AppService<Cliente[]> {
+  private readonly tipoClienteRepository = new TipoClienteRepository();
+  private readonly clienteRepository = new ClienteRepository();
 
-    async handle(request: ClientesParaEdicaoDadosRequest) {
-        if (!request.nomeCpfCnpj)
-            return this.returnNotifications([{ mensagem: '' }]);
-
-        const clientes = await this.buscarClientesParaEdicaoDados(request.nomeCpfCnpj);
-
-        if (!this.validacaoDados.valido())
-            return this.returnNotifications(this.validacaoDados.recuperarErros());
-
-        return this.returnSuccess(clientes);
+  async handleAsync(request: ClientesParaEdicaoDadosRequest) {
+    if (request.validate() === false) {
+      return this.returnNotifications(request.getNotifications);
     }
 
-    private async buscarClientesParaEdicaoDados(nomeCpfCnpj: string) {
-        let clientes: Cliente[] = [];
+    const clientes = await this.buscarClientesParaEdicaoDados(
+      request.requestModel.nomeCpfCnpj
+    );
 
-        const tiposClientes = await this.tipoClienteRepository
-            .retornarColecaoEntidade({ camposRetorno: ['id', 'descricao'] });
+    return this.returnData(clientes);
+  }
 
-        const opcoesBusca: any = {};
+  private async buscarClientesParaEdicaoDados(nomeCpfCnpj: string) {
+    let clientes: Cliente[] = [];
 
-        const cpfCnpj = extrairNumerosTexto(nomeCpfCnpj);
-        if (cpfCnpj) {
-            if (ValidacaoDados.eUmCpf(cpfCnpj))
-                this.validacaoDados.validarCpf(cpfCnpj, 'CPF ou CNPJ inválido');
-            else
-                this.validacaoDados.validarCnpj(cpfCnpj, 'CPF ou CNPJ inválido');
+    const tiposClientes =
+      await this.tipoClienteRepository.entidadesAsync({
+        camposRetorno: ["id", "descricao"],
+      });
 
-            if (this.validacaoDados.valido()) {
-                opcoesBusca.filtro = { cpfCnpj };
-                clientes = await this.clienteRepository.retornarColecaoEntidade(opcoesBusca);
-            }
-        }
-        else {
-            if (!Cliente.nomeClienteValido(nomeCpfCnpj))
-                this.validacaoDados.adicionarMensagem('NOME inválido');
+    const opcoesBusca: any = {};
 
-            if (this.validacaoDados.valido()) {
-                opcoesBusca.filtro = { nome: nomeCpfCnpj };
-                clientes = await this.clienteRepository.clientesPorConteudoNome(opcoesBusca);
-            }
-        }
-
-        if (clientes && clientes.length > 0 && tiposClientes && tiposClientes.length > 0)
-            clientes = this.vincularTipoCliente({ clientes, tiposClientes });
-
-        return clientes;
+    const cpfCnpj = getNumbersText(nomeCpfCnpj);
+    if (cpfCnpj) {
+      opcoesBusca.filtro = { cpfCnpj };
+      clientes = await this.clienteRepository.entidadesAsync(
+        opcoesBusca
+      );
+    } else {
+      opcoesBusca.filtro = { nome: nomeCpfCnpj };
+      clientes = await this.clienteRepository.clientesPorConteudoNome(
+        opcoesBusca
+      );
     }
 
-    private vincularTipoCliente(dados: {
-        clientes: Cliente[],
-        tiposClientes: TipoCliente[]
-    }) {
-        dados.clientes = dados.clientes.map((cliente) => {
-            cliente.tipoCliente
-                = dados.tiposClientes.find(tipoCliente => tipoCliente.id === cliente.tipoClienteId)
-                || {} as TipoCliente;
+    if (
+      clientes &&
+      clientes.length > 0 &&
+      tiposClientes &&
+      tiposClientes.length > 0
+    )
+      clientes = this.vincularTipoCliente({ clientes, tiposClientes });
 
-            return cliente;
-        });
+    return clientes;
+  }
 
-        return dados.clientes;
-    }
+  private vincularTipoCliente(dados: {
+    clientes: Cliente[];
+    tiposClientes: TipoCliente[];
+  }) {
+    dados.clientes = dados.clientes.map((cliente) => {
+      cliente.tipoCliente =
+        dados.tiposClientes.find(
+          (tipoCliente) => tipoCliente.id === cliente.tipoClienteId
+        ) || ({} as TipoCliente);
+
+      return cliente;
+    });
+
+    return dados.clientes;
+  }
 }

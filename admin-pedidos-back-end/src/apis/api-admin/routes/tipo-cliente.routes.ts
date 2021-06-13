@@ -14,7 +14,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposClienteController().handle(routeContext)
+      await new TiposClienteController().handleAsync(routeContext)
   )
 );
 
@@ -23,7 +23,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroTipoClienteController().handle(routeContext)
+      await new CadastroTipoClienteController().handleAsync(routeContext)
   )
 );
 
@@ -32,7 +32,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposClienteAtivosController().handle(routeContext)
+      await new TiposClienteAtivosController().handleAsync(routeContext)
   )
 );
 

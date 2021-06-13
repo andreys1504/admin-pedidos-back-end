@@ -1,5 +1,5 @@
 import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { TipoProduto } from "../../../domain/entities";
 
 export class TipoProdutoRepository extends RepositoryBase<TipoProduto> {

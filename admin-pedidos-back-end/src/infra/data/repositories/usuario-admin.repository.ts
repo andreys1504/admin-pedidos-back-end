@@ -1,5 +1,5 @@
 import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { UsuarioAdmin } from "../../../domain/entities";
 
 export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
@@ -27,7 +27,7 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
             `;
 
         let usuario =
-            (await this.retornarDadosPorSql<any>({
+            (await this.retornarDadosPorSqlAsync<any>({
                 sql,
                 parametros: [dadosAutenticacao.nomeUsuario, dadosAutenticacao.senha]
             }))[0];
@@ -45,7 +45,7 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
                         "usu"."id" = $1
                 `;
             const permissoes = 
-                await this.retornarDadosPorSql<string>({ 
+                await this.retornarDadosPorSqlAsync<string>({ 
                     sql: sqlPermissoes, 
                     parametros: [usuario.id]
                 });
@@ -80,7 +80,7 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
                     "usu"."dataAtualizacao" DESC
             `;
 
-        return await this.retornarDadosPorSql<any>({ sql });
+        return await this.retornarDadosPorSqlAsync<any>({ sql });
     }
 
     async existenciaUsuarioPorNomeUsuario(nomeUsuario: string) {
@@ -97,7 +97,7 @@ export class UsuarioAdminRepository extends RepositoryBase<UsuarioAdmin> {
                     usuario.id
             `;
         const usuario = 
-            await this.retornarDadosPorSql<number>({ sql, parametros: [nomeUsuario] });
+            await this.retornarDadosPorSqlAsync<number>({ sql, parametros: [nomeUsuario] });
 
         return (!usuario || usuario.length < 1) ? false : true;
     }

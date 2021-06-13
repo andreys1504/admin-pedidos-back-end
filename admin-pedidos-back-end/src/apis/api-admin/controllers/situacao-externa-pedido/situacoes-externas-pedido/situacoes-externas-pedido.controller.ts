@@ -6,8 +6,8 @@ import { SituacoesExternasPedidoAppService } from "../../../../../domain/applica
 export class SituacoesExternasPedidoController extends ApiAdminController {
     private readonly appService = new SituacoesExternasPedidoAppService();
     
-    async handle(routeContext: RouteContext) {
-        const responseAppService = await this.appService.handle();
+    async handleAsync(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handleAsync();
         this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

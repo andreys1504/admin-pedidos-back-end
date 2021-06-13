@@ -14,7 +14,7 @@ routes.post(
   "/",
   authorize(),
   catchErrorsRoute((routeContext: RouteContext) =>
-    new CadastroClienteController().handle(routeContext)
+    new CadastroClienteController().handleAsync(routeContext)
   )
 );
 
@@ -22,7 +22,7 @@ routes.get(
   "/clientes-cadastro-pedido/:nomeCpfCnpj",
   authorize(),
   catchErrorsRoute((routeContext: RouteContext) =>
-    new ClientesParaCadastroPedidoController().handle(routeContext)
+    new ClientesParaCadastroPedidoController().handleAsync(routeContext)
   )
 );
 
@@ -30,7 +30,7 @@ routes.get(
   "/para-edicao/:nomeCpfCnpj",
   authorize(),
   catchErrorsRoute((routeContext: RouteContext) =>
-    new ClientesParaEdicaoDadosController().handle(routeContext)
+    new ClientesParaEdicaoDadosController().handleAsync(routeContext)
   )
 );
 
@@ -38,7 +38,7 @@ routes.put(
   "/:id",
   authorize(),
   catchErrorsRoute((routeContext: RouteContext) =>
-    new EdicaoClienteController().handle(routeContext)
+    new EdicaoClienteController().handleAsync(routeContext)
   )
 );
 

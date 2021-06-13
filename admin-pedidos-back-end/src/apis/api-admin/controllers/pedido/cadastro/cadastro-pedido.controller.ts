@@ -8,12 +8,14 @@ import { ResponseApiStatusCode } from "../../../configurations/response-api-stat
 export class CadastroPedidoController extends ApiAdminController {
     private readonly appService = new CadastroPedidoAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const idUsuarioRegistroPedido = this.authenticatedUser(routeContext.request).idUsuario;
-        const requestAppService = (routeContext.request.body as CadastroPedidoRequestApi) as CadastroPedidoRequest;
-        requestAppService.idUsuarioRegistroPedido = idUsuarioRegistroPedido;
-
-        const responseAppService = await this.appService.handle(requestAppService);
+        const requestApi = (routeContext.request.body as CadastroPedidoRequestApi);
+        const requestAppService = new CadastroPedidoRequest({
+            ...requestApi,
+            idUsuarioRegistroPedido: idUsuarioRegistroPedido
+        });
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

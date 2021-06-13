@@ -3,13 +3,17 @@ import { CadastroProdutoAppService } from "../../../../../domain/application-ser
 import { ApiAdminController } from "../../api-admin-controller";
 import { RouteContext } from "../../../configurations/routes/route-context";
 import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { CadastroProdutoRequest } from "../../../../../domain/application-services/produto/cadastro/cadastro-produto.request";
 
 export class CadastroProdutoController extends ApiAdminController {
     private readonly appService = new CadastroProdutoAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = (routeContext.request.body as CadastroProdutoRequestApi);
-        const responseAppService = await this.appService.handle(requestApi);
+        const requestAppService = new CadastroProdutoRequest({
+            ...requestApi
+        })
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

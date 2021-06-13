@@ -6,8 +6,8 @@ import { TiposPedidoAtivosAppService } from "../../../../../domain/application-s
 export class TiposPedidoAtivosController extends ApiAdminController {
     private readonly appService = new TiposPedidoAtivosAppService();
 
-    async handle(routeContext: RouteContext) {
-        const responseAppService = await this.appService.handle();
+    async handleAsync(routeContext: RouteContext) {
+        const responseAppService = await this.appService.handleAsync();
         this.result(routeContext, responseAppService, ResponseApiStatusCode.LISTAGEM);
     }
 }

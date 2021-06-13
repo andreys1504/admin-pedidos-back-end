@@ -1,7 +1,9 @@
-import { Notification } from "../../notifications/notification";
+import { Notification } from "../../../notifications/notification";
 
-export interface ResponseAppService<T> {
-    success: boolean;
-    notifications: Notification[];
-    data: T
+export class ResponseAppService<TData> {
+  constructor(
+    public success: boolean,
+    public data: TData,
+    public notifications: Notification[]
+  ) {}
 }

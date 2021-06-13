@@ -1,4 +1,4 @@
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { SituacaoInternaItemPedido } from "../../../domain/entities";
 
 export class SituacaoInternaItemPedidoRepository extends RepositoryBase<SituacaoInternaItemPedido> {

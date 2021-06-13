@@ -7,7 +7,7 @@ import { SituacaoExternaPedido } from "./situacao-externa-pedido";
 import { TipoPagamentoPedido } from "./tipo-pagamento-pedido";
 import { PedidoItem } from "./pedido-item";
 import { TipoPedido } from "./tipo-pedido";
-import { dataAAAAMMDD, gerarGuid } from "../../core/helpers";
+import { dateAAAAMMDD, generateGuid } from "../../core/helpers";
 import { Entity as EntityDomain } from "../../core/domain/entities/entity";
 import { PedidoDadosEntrega } from "./pedido-dados-entrega";
 import { IdsUsuariosAdminConstante } from "../constants/usuario-admin/ids-usuarios-admin.constante";
@@ -165,7 +165,7 @@ export class Pedido extends EntityDomain {
             valorUnitario: string
         }[]
     }) {
-        this.dataEmissaoPedido = dataAAAAMMDD(new Date());
+        this.dataEmissaoPedido = dateAAAAMMDD(new Date());
         this.usuarioRegistroPedidoId = IdsUsuariosAdminConstante.LojaAppWeb;
         this.situacaoExternaPedidoId = IdsSituacoesExternasPedidoConstante.AguardandoPagamento;
         this.tipoPagamentoPedidoId = null;
@@ -179,7 +179,7 @@ export class Pedido extends EntityDomain {
         this.observacaoCliente = dados.observacaoCliente;
         this.pedidoRealizadoLojaVirtual = true;
         this.idPedidoEmSistemaPagamentoExterno = null;
-        this.id2 = gerarGuid();
+        this.id2 = generateGuid();
 
         this.itensPedido = new Array<PedidoItem>();
         this.itensPedido = dados.itensPedido.map((item: any) => {

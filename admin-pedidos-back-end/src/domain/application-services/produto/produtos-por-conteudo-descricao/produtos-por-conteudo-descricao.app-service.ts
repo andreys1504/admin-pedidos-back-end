@@ -1,25 +1,20 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { ValidacaoDados } from "../../../../core/helpers";
 import { ProdutoRepository } from "../../../../infra/data/repositories/produto.repository";
 import { TipoProdutoRepository } from "../../../../infra/data/repositories/tipo-produto.repository";
 import { Produto, TipoProduto } from "../../../entities";
 import { ProdutosPorConteudoDescricaoRequest } from "./produtos-por-conteudo-descricao.request";
 
-export class ProdutosPorConteudoDescricaoAppService extends AppService {
-    private readonly validacaoDados = new ValidacaoDados();
+export class ProdutosPorConteudoDescricaoAppService extends AppService<Produto[]> {
     private readonly tipoProdutoRepository = new TipoProdutoRepository();
     private readonly produtoRepository = new ProdutoRepository();
 
-    async handle(request: ProdutosPorConteudoDescricaoRequest) {
-        this.validacaoDados.obrigatorio(request.descricao, 'PRODUTO não informado');
-        if (!Produto.nomeProdutoValido(request.descricao))
-            this.validacaoDados.adicionarMensagem('PRODUTO inválido');
-
-        if (!this.validacaoDados.valido())
-            return this.returnNotifications([]);
+    async handleAsync(request: ProdutosPorConteudoDescricaoRequest) {
+        if (request.validate() === false) {
+            return this.returnNotifications(request.getNotifications);
+        }
 
         const opcoesBuscaTipos: any = { camposRetorno: ['id', 'descricao'] };
-        const tiposProduto = await this.tipoProdutoRepository.retornarColecaoEntidade(opcoesBuscaTipos);
+        const tiposProduto = await this.tipoProdutoRepository.entidadesAsync(opcoesBuscaTipos);
 
         const camposRetornoProdutos = [
             'id',
@@ -29,14 +24,15 @@ export class ProdutosPorConteudoDescricaoAppService extends AppService {
             'tipoProdutoId'
         ];
         let produtos = await this.produtoRepository.produtosPorConteudoDescricao({
-            descricao: request.descricao,
+            descricao: request.requestModel.descricao,
             camposRetorno: camposRetornoProdutos
         });
 
-        if (tiposProduto && tiposProduto.length > 0 && produtos && produtos.length > 0)
+        if (tiposProduto && tiposProduto.length > 0 && produtos && produtos.length > 0) {
             produtos = this.vincularTipoProduto({ produtos, tiposProduto });
+        }
 
-        return this.returnSuccess(produtos);
+        return this.returnData(produtos);
     }
 
     private vincularTipoProduto(entidades: {

@@ -3,13 +3,19 @@ import { CadastroSituacaoInternaItemPedidoAppService } from "../../../../../doma
 import { ApiAdminController } from "../../api-admin-controller";
 import { RouteContext } from "../../../configurations/routes/route-context";
 import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { CadastroSituacaoInternaItemPedidoRequest } from "../../../../../domain/application-services/situacao-interna-item-pedido/cadastro/cadastro-situacao-interna-item-pedido.request";
 
 export class CadastroSituacaoInternaItemPedidoController extends ApiAdminController {
     private readonly appService = new CadastroSituacaoInternaItemPedidoAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.body as CadastroSituacaoInternaItemRequestApi;
-        const responseAppService = await this.appService.handle(requestApi);
+        const requestAppService = new CadastroSituacaoInternaItemPedidoRequest({
+            id: requestApi.id,
+            descricao: requestApi.descricao,
+            ativo: requestApi.ativo
+          });
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

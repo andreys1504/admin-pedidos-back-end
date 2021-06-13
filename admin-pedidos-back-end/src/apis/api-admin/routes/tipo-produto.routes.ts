@@ -13,7 +13,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposProdutoCadastradosController().handle(routeContext)
+      await new TiposProdutoCadastradosController().handleAsync(routeContext)
   )
 );
 
@@ -22,7 +22,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposProdutoAtivosController().handle(routeContext)
+      await new TiposProdutoAtivosController().handleAsync(routeContext)
   )
 );
 

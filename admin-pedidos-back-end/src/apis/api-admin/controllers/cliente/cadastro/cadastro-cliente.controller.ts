@@ -8,10 +8,10 @@ import { ResponseApiStatusCode } from "../../../configurations/response-api-stat
 export class CadastroClienteController extends ApiAdminController {
     private readonly appService = new CadastroClienteAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.body as CadastroClienteRequestApi;
-        const requestAppService = requestApi as CadastroClienteRequest;
-        const responseAppService = await this.appService.handle(requestAppService);
+        const requestAppService = new CadastroClienteRequest(requestApi);
+        const responseAppService = await this.appService.handleAsync(requestAppService);
 
         this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }

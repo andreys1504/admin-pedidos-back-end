@@ -1,5 +1,5 @@
 import { DatabaseTables } from "../../../core/infra/data/database-tables";
-import { RepositoryBase } from "../../../core/infra/data/repository";
+import { RepositoryBase } from "../repository";
 import { Pedido, PedidoItem } from "../../../domain/entities";
 
 export class PedidoRepository extends RepositoryBase<Pedido> {
@@ -41,7 +41,7 @@ export class PedidoRepository extends RepositoryBase<Pedido> {
                 WHERE
                     "pedido"."clienteId" = $1
             `;
-        const pedidos = await this.retornarDadosPorSql<Pedido>({ sql, parametros: [idCliente] });
+        const pedidos = await this.retornarDadosPorSqlAsync<Pedido>({ sql, parametros: [idCliente] });
 
         if (pedidos && pedidos.length > 0) {
             const sqlItensPedido =
@@ -66,7 +66,7 @@ export class PedidoRepository extends RepositoryBase<Pedido> {
                         "pedido"."clienteId" = $1
                 `;
 
-            const itensPedido = (await this.retornarDadosPorSql<PedidoItem>({
+            const itensPedido = (await this.retornarDadosPorSqlAsync<PedidoItem>({
                 sql: sqlItensPedido,
                 parametros: [idCliente]
             }));

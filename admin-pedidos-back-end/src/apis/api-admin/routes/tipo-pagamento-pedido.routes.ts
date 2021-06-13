@@ -14,7 +14,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposPagamentoController().handle(routeContext)
+      await new TiposPagamentoController().handleAsync(routeContext)
   )
 );
 
@@ -23,7 +23,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroTipoPagamentoPedidoController().handle(routeContext)
+      await new CadastroTipoPagamentoPedidoController().handleAsync(routeContext)
   )
 );
 
@@ -32,7 +32,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new TiposPagamentoAtivosController().handle(routeContext)
+      await new TiposPagamentoAtivosController().handleAsync(routeContext)
   )
 );
 

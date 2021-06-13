@@ -3,13 +3,19 @@ import { CadastroTipoPagamentoPedidoAppService } from "../../../../../domain/app
 import { ApiAdminController } from "../../api-admin-controller";
 import { RouteContext } from "../../../configurations/routes/route-context";
 import { ResponseApiStatusCode } from "../../../configurations/response-api-status-code";
+import { CadastroTipoPagamentoRequest } from "../../../../../domain/application-services/tipo-pagamento-pedido/cadastro-tipo-pagamento-pedido/cadastro-tipo-pagamento.request";
 
 export class CadastroTipoPagamentoPedidoController extends ApiAdminController {
     private readonly appService = new CadastroTipoPagamentoPedidoAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.body as CadastroTipoPagamentoPedidoRequestApi;
-        const responseAppService = await this.appService.handle(requestApi);
+        const requestAppService = new CadastroTipoPagamentoRequest({
+            id: requestApi.id,
+            descricao: requestApi.descricao,
+            ativo: requestApi.ativo
+          });
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.CADASTRO);
     }
 }

@@ -8,11 +8,14 @@ import { ResponseApiStatusCode } from "../../../configurations/response-api-stat
 export class AutenticacaoController extends ApiAdminController {
     private readonly appService = new AutenticacaoAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.body as AutenticacaoRequestApi;
-        const requestAppService = requestApi as AutenticacaoRequest;
+        const requestAppService = new AutenticacaoRequest({
+            nomeUsuario: requestApi.nomeUsuario,
+            senha: requestApi.senha
+        });
 
-        const responseAppService = await this.appService.handle(requestAppService);
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.SUCESSO);
     }
 }

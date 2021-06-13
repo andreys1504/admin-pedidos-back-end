@@ -17,7 +17,7 @@ routes.get(
   authorize(UserRoles.USUARIO.CADASTRO_USUARIO),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new UsuariosAdminController().handle(routeContext)
+      await new UsuariosAdminController().handleAsync(routeContext)
   )
 );
 
@@ -26,7 +26,7 @@ routes.post(
   authorize(UserRoles.USUARIO.CADASTRO_USUARIO),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroUsuarioAdminController().handle(routeContext)
+      await new CadastroUsuarioAdminController().handleAsync(routeContext)
   )
 );
 
@@ -35,7 +35,7 @@ routes.put(
   authorize(UserRoles.USUARIO.CADASTRO_USUARIO),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new EdicaoUsuarioAdminController().handle(routeContext)
+      await new EdicaoUsuarioAdminController().handleAsync(routeContext)
   )
 );
 
@@ -44,7 +44,7 @@ routes.put(
   authorize(UserRoles.USUARIO.CADASTRO_USUARIO),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new DesativacaoUsuarioAdminController().handle(routeContext)
+      await new DesativacaoUsuarioAdminController().handleAsync(routeContext)
   )
 );
 
@@ -53,7 +53,7 @@ routes.put(
   authorize(UserRoles.USUARIO.CADASTRO_USUARIO),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new AtivacaoUsuarioAdminController().handle(routeContext)
+      await new AtivacaoUsuarioAdminController().handleAsync(routeContext)
   )
 );
 

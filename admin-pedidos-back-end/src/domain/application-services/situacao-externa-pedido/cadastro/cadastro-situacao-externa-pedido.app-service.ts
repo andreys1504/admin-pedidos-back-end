@@ -1,57 +1,48 @@
 import { AppService } from "../../../../core/domain/application-services/service/app-service";
-import { ValidacaoDados } from "../../../../core/helpers";
 import { SituacaoExternaPedidoRepository } from "../../../../infra/data/repositories/situacao-externa-pedido.repository";
 import { SituacaoExternaPedido } from "../../../entities";
+import { CadastroSituacaoExternaPedidoRequest } from "./cadastro-situacao-externa-pedido.request";
 
-export class CadastroSituacaoExternaPedidoAppService extends AppService {
-    private readonly situacaoExternaRepository = new SituacaoExternaPedidoRepository();
-    private readonly validacaoDados = new ValidacaoDados();
+export class CadastroSituacaoExternaPedidoAppService extends AppService<SituacaoExternaPedido> {
+  private readonly situacaoExternaRepository =
+    new SituacaoExternaPedidoRepository();
 
-    async handle(request: {
-        id: number;
-        descricao: string;
-        ativo: boolean
-    }) {
-        const dadosCadastro = this.validarCadastro(request);
-
-        if (!this.validacaoDados.valido())
-            return this.returnNotifications(this.validacaoDados.recuperarErros());
-        
-        const opcoesBuscaPorId: any = {};
-        opcoesBuscaPorId.filtro = { id: dadosCadastro.id };
-        if (await this.situacaoExternaRepository.retornarEntidade(opcoesBuscaPorId))
-            return this.returnNotifications([{ mensagem: 'ID já existente no sistema' }]);
-
-        const opcoesBuscaPorDescricao: any = {};
-        opcoesBuscaPorDescricao.filtro = { descricao: dadosCadastro.descricao }
-        if (await this.situacaoExternaRepository.retornarColecaoEntidade(opcoesBuscaPorDescricao))
-            return this.returnNotifications([{ mensagem: 'DESCRIÇÃO já existente no sistema' }]);
-
-        const situacaoExternaPedido = new SituacaoExternaPedido();
-        situacaoExternaPedido.novaSituacaoExternaPedido({
-            id: dadosCadastro.id,
-            descricao: dadosCadastro.descricao,
-            ativo: dadosCadastro.ativo
-        })
-        await this.situacaoExternaRepository.salvarEntidade(situacaoExternaPedido);
-
-        return this.returnSuccess(situacaoExternaPedido);
+  async handleAsync(request: CadastroSituacaoExternaPedidoRequest) {
+    if (request.validate() === false) {
+      return this.returnNotifications(request.getNotifications);
     }
 
-    private validarCadastro(dadosCadastro: {
-        id: number;
-        descricao: string;
-        ativo: boolean;
-    }) {
-        this.validacaoDados.obrigatorio(dadosCadastro.id, 'ID obrigatório');
-        this.validacaoDados.menorMaior(dadosCadastro.id, 1, 999, 'ID inválido');
-
-        this.validacaoDados.obrigatorio(dadosCadastro.descricao, 'DESCRIÇÃO obrigatória');
-        this.validacaoDados.tamanhoMinimo(dadosCadastro.descricao, 2, 'DESCRIÇÃO inválida');
-        this.validacaoDados.tamanhoMaximo(dadosCadastro.descricao, 45, 'DESCRIÇÃO inválida');
-
-        this.validacaoDados.obrigatorio(dadosCadastro.ativo, 'ATIVO obrigatório');
-
-        return dadosCadastro;
+    const opcoesBuscaPorId: any = {};
+    opcoesBuscaPorId.filtro = { id: request.requestModel.id };
+    if (
+      await this.situacaoExternaRepository.entidadeAsync(opcoesBuscaPorId)
+    ) {
+      return this.returnNotification("id", "ID já existente no sistema");
     }
+
+    const opcoesBuscaPorDescricao: any = {};
+    opcoesBuscaPorDescricao.filtro = {
+      descricao: request.requestModel.descricao,
+    };
+    if (
+      await this.situacaoExternaRepository.entidadesAsync(
+        opcoesBuscaPorDescricao
+      )
+    ) {
+      return this.returnNotification(
+        "descricao",
+        "DESCRIÇÃO já existente no sistema"
+      );
+    }
+
+    const situacaoExternaPedido = new SituacaoExternaPedido();
+    situacaoExternaPedido.novaSituacaoExternaPedido({
+      id: request.requestModel.id,
+      descricao: request.requestModel.descricao,
+      ativo: request.requestModel.ativo,
+    });
+    await this.situacaoExternaRepository.salvarAsync(situacaoExternaPedido);
+
+    return this.returnData(situacaoExternaPedido);
+  }
 }

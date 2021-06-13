@@ -13,7 +13,7 @@ routes.post(
   "/autenticar",
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new AutenticacaoController().handle(routeContext)
+      await new AutenticacaoController().handleAsync(routeContext)
   )
 );
 
@@ -30,7 +30,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new AlteracaoSenhaController().handle(routeContext)
+      await new AlteracaoSenhaController().handleAsync(routeContext)
   )
 );
 

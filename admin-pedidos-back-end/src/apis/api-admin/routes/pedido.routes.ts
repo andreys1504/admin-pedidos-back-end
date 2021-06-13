@@ -15,7 +15,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new PedidosCadastradosController().handle(routeContext)
+      await new PedidosCadastradosController().handleAsync(routeContext)
   )
 );
 
@@ -24,7 +24,7 @@ routes.get(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new PedidosParaTratamentoController().handle(routeContext)
+      await new PedidosParaTratamentoController().handleAsync(routeContext)
   )
 );
 
@@ -33,7 +33,7 @@ routes.post(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new CadastroPedidoController().handle(routeContext)
+      await new CadastroPedidoController().handleAsync(routeContext)
   )
 );
 
@@ -42,7 +42,7 @@ routes.put(
   authorize(),
   catchErrorsRoute(
     async (routeContext: RouteContext) =>
-      await new EdicaoPedidoController().handle(routeContext)
+      await new EdicaoPedidoController().handleAsync(routeContext)
   )
 );
 

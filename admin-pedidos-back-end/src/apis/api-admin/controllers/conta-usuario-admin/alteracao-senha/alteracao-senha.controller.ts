@@ -10,7 +10,7 @@ import { ResponseApiStatusCode } from "../../../configurations/response-api-stat
 export class AlteracaoSenhaController extends ApiAdminController {
     private readonly appService = new AlteracaoSenhaAppService();
 
-    async handle(routeContext: RouteContext) {
+    async handleAsync(routeContext: RouteContext) {
         const requestApi = routeContext.request.body as AlteracaoSenhaRequestApi;
 
         const tokenDecodificado = tokenService
@@ -18,10 +18,14 @@ export class AlteracaoSenhaController extends ApiAdminController {
                 tokenService.getToken(routeContext.request),
                 GlobalSettings.APIS_SALT_KEY);
 
-        const requestAppService = requestApi as AlteracaoSenhaRequest;
-        requestAppService.nomeUsuario = tokenDecodificado.nomeUsuario;
+        const requestAppService = new AlteracaoSenhaRequest({
+            senhaAtual: requestApi.senhaAtual,
+            novaSenha: requestApi.novaSenha,
+            confirmacaoNovaSenha: requestApi.confirmacaoNovaSenha,
+            nomeUsuario: tokenDecodificado.nomeUsuario
+        });
 
-        const responseAppService = await this.appService.handle(requestAppService);
+        const responseAppService = await this.appService.handleAsync(requestAppService);
         this.result(routeContext, responseAppService, ResponseApiStatusCode.ATUALIZACAO);
     }
 }
